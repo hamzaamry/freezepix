@@ -3,7 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from '../pages/Home';
 import Signin from '../pages/Signin'
-import Admin from '../pages/Admin';
+import Admin from '../pages/Admin/Admin';
+import AddAdmin from '../pages/Admin/AddAdmin';
 import GestionUser from '../pages/GestionUser'
 import Image from '../pages/Image';
 import Livraison from '../pages/Livraison';
@@ -19,6 +20,9 @@ const Routers = () => {
         <Route path="/Signin" element={<Signin />} />
 
         <Route path="/Admin" element={<Admin />} />
+        <Route path="/AddAdmin" element={<AddAdmin />} />
+
+
         <Route path="/GestionUser" element={<GestionUser />} />
         <Route path="/Image" element={<Image />} />
         <Route path="/Livraison" element={<Livraison />} />

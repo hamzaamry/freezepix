@@ -3,6 +3,9 @@ import { Box, IconButton , Button } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit'; 
+import { useNavigate } from 'react-router-dom';
+
+
 const columns = [
   { field: 'id', headerName: 'ID', width: 90, },
   {
@@ -57,6 +60,14 @@ const rows = [
 ];
 
 const Admin = () => {
+
+  const navigate = useNavigate();
+
+  const handleAddAdminClick = () => {
+    navigate('/addAdmin');
+  };
+
+
   return (
     <div>
       <h2>Admin Panel</h2>
@@ -74,11 +85,12 @@ const Admin = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '8rem' // 100% of the viewport height
+        height: '8rem' 
       }}
     >
         <Button
         variant="contained"
+        onClick={handleAddAdminClick}
         type="submit"
         style={{ marginTop: '20px', transition: 'box-shadow 0.3s', backgroundColor: '#000000', color: '#ffffff' }}
         sx={{ '&:hover': { boxShadow: '0 0 10px 3px #000000' } }}
