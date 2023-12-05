@@ -15,7 +15,7 @@ const Header = () => {
       p={2}
       style={{
         backgroundColor: '#000',
-        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)', // Add a simple shadow
+        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.2)', 
       }}
     >
       <img src={White} alt="Logo" style={{ maxWidth: '100%', maxHeight: '50px', marginLeft: '2rem' }} />
