@@ -37,8 +37,8 @@ const UploadPic = () => {
   return (
     <Card 
       style={{
-        borderRadius: "10px",
-        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+        borderRadius: "12px",
+        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
         margin: "8px",
         padding: "1rem 2rem",
       }}
@@ -79,6 +79,7 @@ const UploadPic = () => {
               marginTop: "20px",
               backgroundColor: "#000000",
               color: "#ffffff",
+              padding :'0.5rem 2.5rem'
             }}
           >
             Importer

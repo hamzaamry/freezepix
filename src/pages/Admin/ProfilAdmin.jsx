@@ -7,7 +7,7 @@ import UploadPic from "../../components/Profile/UploadPic";
 
 const ProfilAdmin = () => {
   return (
-    <Box>
+    <Box  >
       <Box display="flex" justifyContent='space-between' >
         <UploadPic />
         <ProfilCard />

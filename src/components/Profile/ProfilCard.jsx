@@ -12,10 +12,10 @@ const ProfilCard = () => {
   return (
     <Box
       style={{
-        borderRadius: "10px",
-        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+        borderRadius: "12px",
+        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
         margin: "8px",
-        padding: "1rem 2rem",
+        padding: "1rem 3rem",
       }}
     >
       <Typography variant="h4">Profil</Typography>

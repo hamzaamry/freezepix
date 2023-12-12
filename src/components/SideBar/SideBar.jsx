@@ -17,7 +17,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     <MenuItem
       active={selected === title}
       style={{
-        color: 'gray',
+        color: '#a3a2a2',
       }}
       onClick={() => setSelected(title)}
       icon={icon}
@@ -94,7 +94,7 @@ const SideBar = () => {
               </Box>
               <Box textAlign="center">
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   color={'black'}
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
