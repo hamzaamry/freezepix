@@ -1,10 +1,17 @@
-import React from 'react';
-import { Box, IconButton , Button } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  IconButton,
+  Button,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit'; 
 import { useNavigate } from 'react-router-dom';
 
+import SearchIcon from "@mui/icons-material/Search";
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 90, },
@@ -58,46 +65,87 @@ const rows = [
   { id: 8, Name: 'Rossini', email: 'rossini@example.com', password: 'opera123' },
   { id: 9, Name: 'Harvey', email: 'harvey@example.com', password: 'lawyer65' },
 ];
-
 const Admin = () => {
-
+  const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
 
   const handleAddAdminClick = () => {
-    navigate('/addAdmin');
+    navigate("/addAdmin");
   };
 
+  const handleSearch = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const filteredRows = rows.filter(
+    (row) =>
+      row.Name.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.email.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <div>
-      <h2>Admin Panel</h2>
-      <Box sx={{ height: 350, width: '80%', margin: 'auto', backgroundColor: 'rgba(255, 255, 255, 0.8)', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <h2>Admin Panel</h2>
+
+        <Box
+          style={{
+            display: "flex",
+            height: "3rem",
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={handleAddAdminClick}
+            type="submit"
+            style={{
+              transition: "box-shadow 0.3s",
+              backgroundColor: "#000000",
+              color: "#ffffff",
+            }}
+            sx={{ "&:hover": { boxShadow: "0 0 8px 2px #000000" } }}
+          >
+            Ajouter un Admin
+          </Button>
+        </Box>
+      </Box>
+
+    
+        <TextField
+          placeholder="Search"
+          variant="outlined"
+          sx={{ ml: 10, mb:3 , flex: 1, fontSize: "15px" }}
+          value={searchText}
+          onChange={handleSearch}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton type="button">
+                  <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+  
+
+      <Box
+        display="flex"
+        sx={{
+          height: 500,
+          width: "90%",
+          margin: "auto",
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+        }}
+      >
         <DataGrid
-          rows={rows}
+          rows={filteredRows}
           columns={columns}
           pageSize={5}
           checkboxSelection
           disableRowSelectionOnClick
         />
-      </Box>
-      <Box
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '8rem' 
-      }}
-    >
-        <Button
-        variant="contained"
-        onClick={handleAddAdminClick}
-        type="submit"
-        style={{ marginTop: '20px', transition: 'box-shadow 0.3s', backgroundColor: '#000000', color: '#ffffff' }}
-        sx={{ '&:hover': { boxShadow: '0 0 10px 3px #000000' } }}
-      >
-        Ajouter un Admin
-      </Button>
-
       </Box>
     </div>
   );

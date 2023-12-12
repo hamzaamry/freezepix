@@ -13,13 +13,13 @@ const ProfilCard = () => {
     <Box
       style={{
         borderRadius: "12px",
-        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.3)",
         margin: "8px",
         padding: "1rem 3rem",
       }}
     >
-      <Typography variant="h4">Profil</Typography>
-      <Typography variant="h6">The information can be edited </Typography>
+      <Typography variant="h5">Profile</Typography>
+      <Typography variant="h7">The information can be edited </Typography>
       <Box>
         <TextField
           label="Nom de famille"

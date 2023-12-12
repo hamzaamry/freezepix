@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react'
-import { Button, Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
-import admin from '../../Assets/jpg/admin.jpg'
+import React, { useState, useRef } from "react";
+import { Button, Card, CardContent, Typography, Box } from "@mui/material";
+import admin from "../../Assets/jpg/admin.jpg";
 
 const UploadPic = () => {
   const [userPhoto, setUserPhoto] = useState(admin);
@@ -21,7 +21,6 @@ const UploadPic = () => {
   };
 
   const handleImportClick = () => {
-    // Déclenche le clic du champ de fichier
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -31,37 +30,42 @@ const UploadPic = () => {
     lastName: "Amri",
     dateNaissance: "12/03/2002",
     phone: 28585858,
-    adresse: "Tunisie ",
+    adresse: "Tunisie",
   };
 
   return (
-    <Card 
+    <Card
       style={{
         borderRadius: "12px",
         boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
         margin: "8px",
         padding: "1rem 2rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center", // Center the content horizontally
+        justifyContent: "center", // Center the content vertically
       }}
     >
-      <CardMedia
-        component="img"
-        height="250"
-        image={userPhoto}
-        alt="Photo de l'utilisateur"
-        style={{ borderRadius: "50%" }}
+      <img
+        src={userPhoto}
+        alt="admin"
+        style={{
+          width: "150px",
+          height: "150px",
+          borderRadius: "50%",
+          objectFit: "cover",
+        }}
       />
 
-      <CardContent style={{ padding: '2rem 5rem 1rem' }}>
-        <Typography variant="h5" style={{ textAlign: 'center' }}>
-          {userData.lastName}
-        </Typography>
+      <CardContent style={{ padding: "2rem 5rem 1rem", textAlign: "center" }}>
+        <Typography variant="h5">{userData.lastName}</Typography>
 
         <input
           type="file"
           accept="image/*"
           id="upload-photo"
           ref={fileInputRef}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleFileUpload}
         />
         <Box
@@ -79,7 +83,7 @@ const UploadPic = () => {
               marginTop: "20px",
               backgroundColor: "#000000",
               color: "#ffffff",
-              padding :'0.5rem 2.5rem'
+              padding: "0.5rem 2.5rem",
             }}
           >
             Importer
@@ -88,6 +92,6 @@ const UploadPic = () => {
       </CardContent>
     </Card>
   );
-}
+};
 
 export default UploadPic;

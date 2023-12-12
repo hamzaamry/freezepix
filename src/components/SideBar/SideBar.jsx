@@ -75,7 +75,11 @@ const SideBar = () => {
                   width="50px"
                   height="50px"
                   src={admin}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                  style={{
+                    cursor: "pointer",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
                 />
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuIcon />
@@ -91,7 +95,6 @@ const SideBar = () => {
                 justifyContent="center"
                 alignItems="center"
               ></Box>
-             
             </Box>
           )}
 

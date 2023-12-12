@@ -1,24 +1,28 @@
-import React, { useState } from 'react';
-import Header from '../Header/Header';
-import SideBar from '../SideBar/SideBar';
-import Routes from '../../routes/Routers';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from "react";
+import Header from "../Header/Header";
+import SideBar from "../SideBar/SideBar";
+import Routes from "../../routes/Routers";
+import { useLocation } from "react-router-dom";
 
 const Layout = () => {
   const location = useLocation();
   const [isSidebar, setIsSidebar] = useState(true);
 
-  const routesWithoutNavbar = ['/Signup', '/Signin'];
+  const routesWithoutNavbar = ["/Signin"];
+  const routesWithoutSidebar = ["/Signin"]; // Add routes for which sidebar should be hidden
 
-  // Check if the current route is in the list
+  // Check if the current route is in the respective list
   const hideNavbar = routesWithoutNavbar.includes(location.pathname);
+  const hideSidebar = routesWithoutSidebar.includes(location.pathname);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", minHeight: "80vh" }}
+    >
       {!hideNavbar && <Header />}
-      <div style={{ display: 'flex', flex: 1 }}>
-        <SideBar isSidebar={isSidebar} />
-        <div style={{ flex: 1, padding: '20px' }}>
+      <div style={{ display: "flex", flex: 1 }}>
+        {!hideSidebar && <SideBar isSidebar={isSidebar} />}
+        <div style={{ flex: 1, padding: "20px" }}>
           <Routes />
         </div>
       </div>
