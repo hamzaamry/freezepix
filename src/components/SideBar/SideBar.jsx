@@ -55,13 +55,12 @@ const SideBar = () => {
     >
       <Sidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-    
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuIcon /> : undefined}
             style={{
               margin: "10px 0 15px 0",
-              color: 'gray',
+              color: "gray",
             }}
           >
             {!isCollapsed && (
@@ -71,9 +70,13 @@ const SideBar = () => {
                 alignItems="center"
                 ml="10px"
               >
-                <Typography variant="h5" color={'gray'}>
-                  MENU
-                </Typography>
+                <img
+                  alt="profile-user"
+                  width="50px"
+                  height="50px"
+                  src={admin}
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                />
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuIcon />
                 </IconButton>
@@ -83,26 +86,12 @@ const SideBar = () => {
 
           {!isCollapsed && (
             <Box mb="15px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={admin}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h5"
-                  color={'black'}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  Hamza A
-                </Typography>
-            
-              </Box>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              ></Box>
+             
             </Box>
           )}
 
@@ -114,30 +103,22 @@ const SideBar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-             <Item
+            <Item
               title="gestion des admins"
               to="/Admin"
               icon={<PeopleIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-        
+
             <Item
-              title="gestion des utilisateurs"
+              title="gestion des livraisons"
               to="/GestionUser"
               icon={<PeopleIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-          
 
-            <Typography
-              variant="h6"
-              color='gray'
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Pages
-            </Typography>
             <Item
               title="Profile"
               to="/ProfilAdmin"
@@ -145,12 +126,11 @@ const SideBar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-        
           </Box>
         </Menu>
       </Sidebar>
     </Box>
-  )
+  );
 }
 
 export default SideBar

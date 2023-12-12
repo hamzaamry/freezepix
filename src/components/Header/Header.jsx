@@ -24,12 +24,15 @@ const Header = () => {
           <img
             src={White}
             alt="Logo"
-            style={{ maxWidth: "100%", maxHeight: "50px", marginLeft: "1rem" }}
+            style={{ maxWidth: "100%", maxHeight: "45px", marginLeft: "2rem" }}
           />
         </Link>
 
         <Box display="flex" backgroundColor="#a3a2a2" borderRadius="5px" ml={5}>
-          <InputBase sx={{ ml: 3, flex: 1 }} placeholder="Search" />
+          <InputBase
+            sx={{ ml: 3, flex: 1, fontSize: "15px" }}
+            placeholder="Search"
+          />
           <IconButton type="button" sx={{ p: 2 }}>
             <SearchIcon />
           </IconButton>
