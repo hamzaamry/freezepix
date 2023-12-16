@@ -1,12 +1,16 @@
 import React, { useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField} from "@mui/material";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const AddAdmin = () => {
   const [adminData, setAdminData] = useState({
     name: "",
     email: "",
     password: "",
+    role: "admin",
   });
 
   const handleInputChange = (e) => {
@@ -16,13 +20,32 @@ const AddAdmin = () => {
 
   const handleAddAdminSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await axios.post("BACKEND_API_ENDPOINT", adminData);
+      const response = await axios.post("http://localhost:5000/api/admin/ajouterAdmin", adminData);
       console.log("Admin Added Successfully:", response.data);
+
+      setAdminData({
+        name: "",
+        email: "",
+        password: "",
+        role: "admin",
+      });
+  
+      // Afficher un toast de succès
+      toast.success('Admin ajouté avec succès! ' + response.data.message , {
+        position: toast.POSITION.TOP_CENTER,
+      });
+
     } catch (error) {
       console.error("Error Adding Admin:", error.message);
+      // Afficher un toast d'erreur
+      toast.error('Erreur lors de l\'ajout de l\'admin. Veuillez réessayer.', {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
+
+
   };
 
   return (
@@ -90,6 +113,8 @@ const AddAdmin = () => {
           </Button>
         </Box>
       </form>
+
+
     </Box>
   );
 };
