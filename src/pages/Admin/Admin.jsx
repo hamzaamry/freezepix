@@ -2,46 +2,82 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, TextField, InputAdornment, IconButton } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit'; 
+import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const columns = [
-  { field: '_id', headerName: 'ID', width: 90 },
-  { field: 'name', headerName: 'Name', width: 200, editable: true },
-  { field: 'email', headerName: 'Email', width: 300, editable: true },
-  { field: 'password', headerName: 'Password', width: 250, editable: true },
-  {
-    field: 'action',
-    headerName: 'Action',
-    width: 100,
-    renderCell: (params) => (
-      <div>
-        <IconButton>
-          <EditIcon style={{ cursor: 'pointer', marginRight: 8 }} />
-        </IconButton>
-        <IconButton>
-          <DeleteIcon style={{ cursor: 'pointer' }} />
-        </IconButton>
-      </div>
-    ),
-  },
-];
 
 const Admin = () => {
+
   const [searchText, setSearchText] = useState("");
   const [admins, setAdmins] = useState([]);
   const navigate = useNavigate();
 
+  // Définition de la fonction handleDeleteAdmin avant son utilisation
+  const handleDeleteAdmin = async (adminId) => {
+    try {
+
+      await axios.delete(`http://localhost:5000/api/admin/deleteadmin/${adminId}`);
+      toast.success('Admin supprimé avec succès!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+
+
+      // Actualisez la liste des administrateurs après la suppression
+      const response = await axios.get("http://localhost:5000/api/admin/getAll");
+      const adminsWithIds = response.data.map((admin, index) => ({ ...admin, id: index + 1 }));
+      setAdmins(adminsWithIds);
+
+
+    } catch (error) {
+      console.error("Error deleting admin:", error.message);
+      toast.error('Erreur lors de la suppression de l\'admin. Veuillez réessayer.', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  };
+
+
+
+  const columns = [
+    { field: '_id', headerName: 'ID', width: 90 },
+    { field: 'name', headerName: 'Name', width: 200, editable: true },
+    { field: 'email', headerName: 'Email', width: 300, editable: true },
+    { field: 'password', headerName: 'Password', width: 250, editable: true },
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: 100,
+
+
+      renderCell: (params) => (
+        <div>
+          <IconButton>
+            <EditIcon style={{ cursor: 'pointer', marginRight: 8 }} />
+          </IconButton>
+          <IconButton onClick={() => handleDeleteAdmin(params.row._id)}>
+            <DeleteIcon style={{ cursor: 'pointer' }} />
+          </IconButton>
+        </div>
+      ),
+    },
+  ];
+
+  
+  
   useEffect(() => {
+
     const fetchAdmins = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/admin/getAll");
         const adminsWithIds = response.data.map((admin, index) => ({ ...admin, id: index + 1 }));
+
         setAdmins(adminsWithIds);
+
+        
       } catch (error) {
         console.error("Error fetching admins:", error.message);
         toast.error('Erreur lors du chargement des administrateurs. Veuillez réessayer.', {
@@ -49,11 +85,10 @@ const Admin = () => {
         });
       }
     };
-  
+
     fetchAdmins();
   }, []);
 
-  
   const handleAddAdminClick = () => {
     navigate("/addAdmin");
   };
