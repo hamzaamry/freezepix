@@ -1,37 +1,40 @@
-import React , { useState } from 'react'
+import React, { useState } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 
 import { Link } from "react-router-dom";
-import HomeIcon from '@mui/icons-material/Home';
-import PeopleIcon from '@mui/icons-material/People';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-import admin from '../../Assets/jpg/admin.jpg';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import DiscountIcon from '@mui/icons-material/Discount';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import AspectRatioIcon from '@mui/icons-material/AspectRatio';
+
+import admin from "../../Assets/jpg/admin.jpg";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
-
   return (
-    <Link to={to} style={{ textDecoration: 'none', color: 'inherit' }}>
-    <MenuItem
-      active={selected === title}
-      style={{
-        color: '#a3a2a2',
-      }}
-      onClick={() => setSelected(title)}
-      icon={icon}
-    >
-      <Typography>{title}</Typography>
-    </MenuItem>
-  </Link>
+    <Link to={to} style={{ textDecoration: "none", color: "inherit" }}>
+      <MenuItem
+        active={selected === title}
+        style={{
+          color: "#a3a2a2",
+        }}
+        onClick={() => setSelected(title)}
+        icon={icon}
+      >
+        <Typography>{title}</Typography>
+      </MenuItem>
+    </Link>
   );
 };
 
 const SideBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-
 
   return (
     <Box
@@ -105,7 +108,21 @@ const SideBar = () => {
               icon={<HomeIcon />}
               selected={selected}
               setSelected={setSelected}
+           
             />
+
+            {!isCollapsed && (
+              <>
+                <Typography
+                  variant="h7"
+                  color="gray"
+                  sx={{ m: "15px 1rem 5rem 2rem" }}
+                >
+                  Settings
+                </Typography>
+              </>
+            )}
+
             <Item
               title="gestion des admins"
               to="/Admin"
@@ -117,7 +134,31 @@ const SideBar = () => {
             <Item
               title="gestion des livraisons"
               to="/GestionUser"
-              icon={<PeopleIcon />}
+              icon={<LocalShippingIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="gestion des coupons"
+              to="/GestionUser"
+              icon={<DiscountIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="gestion des taxes"
+              to="/GestionUser"
+              icon={<SearchOffIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="gestion taille d'image"
+              to="/GestionUser"
+              icon={<AspectRatioIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -134,6 +175,6 @@ const SideBar = () => {
       </Sidebar>
     </Box>
   );
-}
+};
 
-export default SideBar
+export default SideBar;
