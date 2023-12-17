@@ -1,9 +1,8 @@
 import React from "react";
-import { Box, IconButton, InputBase } from "@mui/material";
+import { Box, IconButton} from "@mui/material";
 import { Link } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import SettingsIcon from "@mui/icons-material/Settings";
 import White from "../../Assets/logo/White.png";
 
 
@@ -40,9 +39,6 @@ const Header = () => {
           </IconButton>
         </Link>
 
-        <IconButton>
-          <SettingsIcon style={{ color: "white", fontSize: "30px" }} />
-        </IconButton>
       </Box>
     </Box>
   );
