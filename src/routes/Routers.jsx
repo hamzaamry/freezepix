@@ -8,7 +8,7 @@ import Admin from '../pages/Admin/Admin';
 import ProfilAdmin from '../pages/Admin/ProfilAdmin';
 import AddAdmin from '../pages/Admin/AddAdmin';
 
-import GestionUser from '../pages/GestionUser'
+import Customers from '../pages/Customers'
 import Image from '../pages/Image';
 import Livraison from '../pages/Livraison';
 import MarketingUser from '../pages/MarketingUser';
@@ -27,7 +27,7 @@ const Routers = () => {
         <Route path="/AddAdmin" element={<AddAdmin />} />
 
 
-        <Route path="/GestionUser" element={<GestionUser />} />
+        <Route path="/Customers" element={<Customers />} />
         <Route path="/Image" element={<Image />} />
         <Route path="/Livraison" element={<Livraison />} />
         <Route path="/MarketingUser" element={<MarketingUser />} />

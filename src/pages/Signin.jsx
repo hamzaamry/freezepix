@@ -32,7 +32,7 @@ const Signin = () => {
 
     try {
       // Faites la requête Axios pour le login ici
-      const response = await axios.post("http://localhost:5000/api/users/login", {
+      const response = await axios.post("http://localhost:5000/api/admin/login", {
         email,
         password,
       });
