@@ -1,88 +1,138 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, TextField, InputAdornment, IconButton } from "@mui/material";
-import { DataGrid } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import {
+  Box,
+  Button,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Admin = () => {
-
   const [searchText, setSearchText] = useState("");
   const [admins, setAdmins] = useState([]);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+
   const navigate = useNavigate();
 
   // Définition de la fonction handleDeleteAdmin avant son utilisation
   const handleDeleteAdmin = async (adminId) => {
     try {
-
-      await axios.delete(`http://localhost:5000/api/admin/deleteadmin/${adminId}`);
-      toast.success('Admin supprimé avec succès!', {
+      await axios.delete(
+        `http://localhost:5000/api/admin/deleteadmin/${adminId}`
+      );
+      toast.success("Admin supprimé avec succès!", {
         position: toast.POSITION.TOP_CENTER,
       });
-
 
       // Actualisez la liste des administrateurs après la suppression
-      const response = await axios.get("http://localhost:5000/api/admin/getAll");
-      const adminsWithIds = response.data.map((admin, index) => ({ ...admin, id: index + 1 }));
+      const response = await axios.get(
+        "http://localhost:5000/api/admin/getAll"
+      );
+      const adminsWithIds = response.data.map((admin, index) => ({
+        ...admin,
+        id: index + 1,
+      }));
       setAdmins(adminsWithIds);
-
-
     } catch (error) {
       console.error("Error deleting admin:", error.message);
-      toast.error('Erreur lors de la suppression de l\'admin. Veuillez réessayer.', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      toast.error(
+        "Erreur lors de la suppression de l'admin. Veuillez réessayer.",
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
     }
   };
 
+  const handleUpdateAdmin = async () => {
+    try {
+      await axios.put(`http://localhost:5000/api/admin/${selectedAdmin._id}`, {
+        name: selectedAdmin.name,
+        email: selectedAdmin.email,
+      });
 
+      toast.success("Admin mis à jour avec succès!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+
+      // Actualisez la liste des administrateurs après la mise à jour
+      const response = await axios.get(
+        "http://localhost:5000/api/admin/getAll"
+      );
+      const adminsWithIds = response.data.map((admin, index) => ({
+        ...admin,
+        id: index + 1,
+      }));
+      setAdmins(adminsWithIds);
+
+      // Réinitialisez l'état selectedAdmin
+      setSelectedAdmin(null);
+    } catch (error) {
+      console.error("Error updating admin:", error.message);
+      toast.error(
+        "Erreur lors de la mise à jour de l'admin. Veuillez réessayer.",
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
+    }
+  };
+
+  const handleEditAdmin = (admin) => {
+    setSelectedAdmin(admin);
+  };
 
   const columns = [
-    { field: '_id', headerName: 'ID', width: 90 },
-    { field: 'name', headerName: 'Name', width: 200, editable: true },
-    { field: 'email', headerName: 'Email', width: 300, editable: true },
-    { field: 'password', headerName: 'Password', width: 250, editable: true },
+    { field: "_id", headerName: "ID", width: 90 },
+    { field: "name", headerName: "Name", width: 200, editable: true },
+    { field: "email", headerName: "Email", width: 300, editable: true },
+    { field: "password", headerName: "Password", width: 250, editable: true },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 100,
-
 
       renderCell: (params) => (
         <div>
-          <IconButton>
-            <EditIcon style={{ cursor: 'pointer', marginRight: 8 }} />
+          <IconButton onClick={() => handleEditAdmin(params.row)}>
+            <EditIcon style={{ cursor: "pointer", marginRight: 8 }} />
           </IconButton>
           <IconButton onClick={() => handleDeleteAdmin(params.row._id)}>
-            <DeleteIcon style={{ cursor: 'pointer' }} />
+            <DeleteIcon style={{ cursor: "pointer" }} />
           </IconButton>
         </div>
       ),
     },
   ];
 
-  
-  
   useEffect(() => {
-
     const fetchAdmins = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/admin/getAll");
-        const adminsWithIds = response.data.map((admin, index) => ({ ...admin, id: index + 1 }));
+        const response = await axios.get(
+          "http://localhost:5000/api/admin/getAll"
+        );
+        const adminsWithIds = response.data.map((admin, index) => ({
+          ...admin,
+          id: index + 1,
+        }));
 
         setAdmins(adminsWithIds);
-
-        
       } catch (error) {
         console.error("Error fetching admins:", error.message);
-        toast.error('Erreur lors du chargement des administrateurs. Veuillez réessayer.', {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        toast.error(
+          "Erreur lors du chargement des administrateurs. Veuillez réessayer.",
+          {
+            position: toast.POSITION.TOP_CENTER,
+          }
+        );
       }
     };
 
@@ -131,7 +181,7 @@ const Admin = () => {
       <TextField
         placeholder="Rechercher"
         variant="outlined"
-        sx={{ ml: 10, mb:3 , flex: 1, fontSize: "15px" }}
+        sx={{ ml: 10, mb: 3, flex: 1, fontSize: "15px" }}
         value={searchText}
         onChange={handleSearch}
         InputProps={{
@@ -144,6 +194,35 @@ const Admin = () => {
           ),
         }}
       />
+
+      {selectedAdmin && (
+        <div>
+          <TextField
+            label="Nouveau nom"
+            value={selectedAdmin.name}
+            onChange={(e) =>
+              setSelectedAdmin({ ...selectedAdmin, name: e.target.value })
+            }
+            style={{
+              margin:'1rem'
+            }}
+          />
+          <TextField
+            label="Nouveau email"
+            value={selectedAdmin.email}
+            onChange={(e) =>
+              setSelectedAdmin({ ...selectedAdmin, email: e.target.value })
+            }
+            style={{
+              margin:'1rem'
+            }}
+          />
+          <Button    style={{
+              margin:'1rem'
+            }} onClick={handleUpdateAdmin}>Enregistrer</Button>
+        </div>
+      )}
+
       <Box
         display="flex"
         sx={{
