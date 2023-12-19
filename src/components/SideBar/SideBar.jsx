@@ -12,6 +12,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import DiscountIcon from '@mui/icons-material/Discount';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import AspectRatioIcon from '@mui/icons-material/AspectRatio';
+import ContactsIcon from '@mui/icons-material/Contacts';
 
 import admin from "../../Assets/jpg/admin.jpg";
 
@@ -127,6 +128,14 @@ const SideBar = () => {
               title="gestion des admins"
               to="/Admin"
               icon={<PeopleIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="gestion des clients"
+              to="/Customers"
+              icon={<ContactsIcon />}
               selected={selected}
               setSelected={setSelected}
             />

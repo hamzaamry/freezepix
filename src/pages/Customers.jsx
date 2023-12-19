@@ -19,21 +19,16 @@ const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-
   // Définition de la fonction handleDeletecustomer avant son utilisation
   const handleDeleteCustomer = async (customerId) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/admin/deleteadmin/${customerId}`
-      );
+      await axios.delete(`http://localhost:5000/api/users/${customerId}`);
       toast.success("client supprimé avec succès!", {
         position: toast.POSITION.TOP_CENTER,
       });
 
       // Actualisez la liste des administrateurs après la suppression
-      const response = await axios.get(
-        "http://localhost:5000/api/admin/getAll"
-      );
+      const response = await axios.get("http://localhost:5000/api/users/");
       const customersWithIds = response.data.map((customer, index) => ({
         ...customer,
         id: index + 1,
@@ -52,19 +47,20 @@ const Customers = () => {
 
   const handleUpdateCustomer = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/${selectedCustomer._id}`, {
-        name: selectedCustomer.name,
-        email: selectedCustomer.email,
-      });
+      await axios.put(
+        `http://localhost:5000/api/users/update/${selectedCustomer._id}`,
+        {
+          name: selectedCustomer.name,
+          email: selectedCustomer.email,
+        }
+      );
 
       toast.success("customer mis à jour avec succès!", {
         position: toast.POSITION.TOP_CENTER,
       });
 
       // Actualisez la liste des administrateurs après la mise à jour
-      const response = await axios.get(
-        "http://localhost:5000/api/admin/getAll"
-      );
+      const response = await axios.get("http://localhost:5000/api/users/");
       const customersWithIds = response.data.map((customer, index) => ({
         ...customer,
         id: index + 1,
@@ -89,15 +85,30 @@ const Customers = () => {
   };
 
   const columns = [
-    { field: "_id", headerName: "ID", width: 90 },
-    { field: "name", headerName: "Name", width: 200, editable: true },
-    { field: "email", headerName: "Email", width: 300, editable: true },
-    { field: "password", headerName: "Password", width: 250, editable: true },
+    { field: "name", headerName: "Nom", width: 80, editable: false },
+    { field: "lastName", headerName: "Prénom", width: 80, editable: false },
+    { field: "email", headerName: "Email", width: 190, editable: false },
+    { field: "phone", headerName: "Numéro tel", width: 100, editable: false },
+    {
+      field: "photo",
+      headerName: "Photo",
+      width: 80,
+      editable: false,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="profil"
+          style={{ width: "45px", height: "45px", borderRadius: "50%" }}
+        />
+      ),
+    },
+    { field: "role", headerName: "Rôle", width: 150, editable: false },
+    { field: "adresse", headerName: "Adresse", width: 180, editable: false },
+    { field: "age", headerName: "Age", width: 50, editable: false },
     {
       field: "action",
       headerName: "Action",
-      width: 100,
-
+      width: 150,
       renderCell: (params) => (
         <div>
           <IconButton onClick={() => handleEditCustomer(params.row)}>
@@ -114,9 +125,7 @@ const Customers = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/admin/getAll"
-        );
+        const response = await axios.get("http://localhost:5000/api/users/");
         const customersWithIds = response.data.map((customer, index) => ({
           ...customer,
           id: index + 1,
@@ -137,7 +146,6 @@ const Customers = () => {
     fetchCustomers();
   }, []);
 
-
   const handleSearch = (event) => {
     setSearchText(event.target.value);
   };
@@ -145,14 +153,15 @@ const Customers = () => {
   const filteredCustomers = customers.filter(
     (customer) =>
       customer.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchText.toLowerCase())
+      customer.email.toLowerCase().includes(searchText.toLowerCase()) ||
+      customer.role.toLowerCase().includes(searchText.toLowerCase()) ||
+    customer.adresse.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
     <div>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <h2>customer Panel</h2>
-       
+        <h2>Gestion des clients</h2>
       </Box>
       <TextField
         placeholder="Rechercher"
@@ -171,33 +180,115 @@ const Customers = () => {
         }}
       />
 
-      {selectedCustomer && (
-        <div>
-          <TextField
-            label="Nouveau nom"
-            value={selectedCustomer.name}
-            onChange={(e) =>
-              setSelectedCustomer({ ...selectedCustomer, name: e.target.value })
-            }
-            style={{
-              margin:'1rem'
-            }}
-          />
-          <TextField
-            label="Nouveau email"
-            value={selectedCustomer.email}
-            onChange={(e) =>
-              setSelectedCustomer({ ...selectedCustomer, email: e.target.value })
-            }
-            style={{
-              margin:'1rem'
-            }}
-          />
-          <Button    style={{
-              margin:'1rem'
-            }} onClick={handleUpdateCustomer}>Enregistrer</Button>
-        </div>
-      )}
+{selectedCustomer && (
+  <div>
+    <TextField
+      label="Nouveau nom"
+      value={selectedCustomer.name}
+      onChange={(e) =>
+        setSelectedCustomer({ ...selectedCustomer, name: e.target.value })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <TextField
+      label="Nouveau prénom"
+      value={selectedCustomer.lastName}
+      onChange={(e) =>
+        setSelectedCustomer({
+          ...selectedCustomer,
+          lastName: e.target.value,
+        })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <TextField
+      label="Nouveau email"
+      value={selectedCustomer.email}
+      onChange={(e) =>
+        setSelectedCustomer({
+          ...selectedCustomer,  
+          email: e.target.value,
+        })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <TextField
+      label="Nouveau téléphone"
+      value={selectedCustomer.phone}
+      onChange={(e) =>
+        setSelectedCustomer({
+          ...selectedCustomer,
+          phone: e.target.value,
+        })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <TextField
+      label="Nouveau rôle"
+      value={selectedCustomer.role}
+      onChange={(e) =>
+        setSelectedCustomer({
+          ...selectedCustomer,
+          role: e.target.value,
+        })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <TextField
+      label="Nouvelle adresse"
+      value={selectedCustomer.adresse}
+      onChange={(e) =>
+        setSelectedCustomer({
+          ...selectedCustomer,
+          adresse: e.target.value,
+        })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <TextField
+      label="Nouvel âge"
+      value={selectedCustomer.age}
+      onChange={(e) =>
+        setSelectedCustomer({
+          ...selectedCustomer,
+          age: e.target.value,
+        })
+      }
+      style={{
+        margin: "1rem",
+      }}
+    />
+    <Button
+      style={{
+        margin: "1rem",
+      }}
+      onClick={handleUpdateCustomer}
+    >
+      Enregistrer
+    </Button>
+    <Button
+      style={{
+        margin: "1rem",
+      }}
+      onClick={() => setSelectedCustomer(null)}
+    >
+      Annuler
+    </Button>
+  </div>
+)}
+
 
       <Box
         display="flex"
@@ -221,4 +312,4 @@ const Customers = () => {
   );
 };
 
-export default Customers
+export default Customers;
