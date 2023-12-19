@@ -6,6 +6,7 @@ import ProfilCard from "../../components/Profile/ProfilCard";
 import UploadPic from "../../components/Profile/UploadPic";
 
 const ProfilAdmin = () => {
+  
   return (
     <Box  >
       <Box display="flex" justifyContent='space-between' >

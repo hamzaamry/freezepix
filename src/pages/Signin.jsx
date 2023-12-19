@@ -11,6 +11,9 @@ import Black from "../Assets/logo/Black.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import { useDispatch } from 'react-redux';
+import { setToken } from "../components/Store/AuthSlice";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -23,6 +26,9 @@ const theme = createTheme({
 });
 
 const Signin = () => {
+
+  const dispatch = useDispatch(); 
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -31,20 +37,17 @@ const Signin = () => {
     e.preventDefault();
 
     try {
-      // Faites la requête Axios pour le login ici
       const response = await axios.post("http://localhost:5000/api/admin/login", {
         email,
         password,
       });
-
-      // Si la connexion est réussie, vous pouvez afficher la réponse ou effectuer d'autres actions
       console.log("Login successful:", response.data);
 
-      // Naviguez vers Dashboard après une connexion réussie
+      dispatch(setToken(response.data.token));
+      
       navigate("/home");
     } catch (error) {
       console.error("Error signing in:", error.message);
-      // Gérez les erreurs de connexion ici
     }
   };
 

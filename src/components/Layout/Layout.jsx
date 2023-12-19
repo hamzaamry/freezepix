@@ -9,7 +9,7 @@ const Layout = () => {
   const [isSidebar, setIsSidebar] = useState(true);
 
   const routesWithoutNavbar = ["/Signin"];
-  const routesWithoutSidebar = ["/Signin"]; // Add routes for which sidebar should be hidden
+  const routesWithoutSidebar = ["/Signin"]; 
 
   // Check if the current route is in the respective list
   const hideNavbar = routesWithoutNavbar.includes(location.pathname);
