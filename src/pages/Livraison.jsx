@@ -23,6 +23,7 @@ const Livraison = () => {
   const [editingLivraison, setEditingLivraison] = useState(null);
   const [editFraisTransport, setEditFraisTransport] = useState('');
   const [editCurrency, setEditCurrency] = useState('');
+  const [deleteConfirmationDialog, setDeleteConfirmationDialog] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,20 +39,30 @@ const Livraison = () => {
   }, []);
 
   const handleDelete = (livraisonId) => {
-    Axios.delete(`http://localhost:5000/api/livraison/deletlivraison/${livraisonId}`)
-      .then((response) => {
-        if (response.data.success) {
-          setLivraisons((prevLivraisons) =>
-            prevLivraisons.filter((livraison) => livraison._id !== livraisonId)
-          );
-          toast.success(`Livraison ${livraisonId} deleted successfully!`);
-        } else {
-          toast.error(`Failed to delete Livraison ${livraisonId}`);
-        }
-      })
-      .catch((error) => {
-        console.error('Error deleting Livraison:', error.message);
-      });
+    setDeleteConfirmationDialog(livraisonId);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await Axios.delete(`http://localhost:5000/api/livraison/deletlivraison/${deleteConfirmationDialog}`);
+
+      if (response.data.success) {
+        setLivraisons((prevLivraisons) =>
+          prevLivraisons.filter((livraison) => livraison._id !== deleteConfirmationDialog)
+        );
+        toast.success(`Livraison ${deleteConfirmationDialog} deleted successfully!`);
+      } else {
+        toast.error(`Failed to delete Livraison ${deleteConfirmationDialog}`);
+      }
+
+      setDeleteConfirmationDialog(null);
+    } catch (error) {
+      console.error('Error deleting Livraison:', error.message);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmationDialog(null);
   };
 
   const handleEdit = (livraison) => {
@@ -59,6 +70,7 @@ const Livraison = () => {
     setEditFraisTransport(livraison.fraisTransport);
     setEditCurrency(livraison.currency);
   };
+
 
   const handleSave = async () => {
     try {
@@ -158,6 +170,21 @@ const Livraison = () => {
           </Button>
           <Button onClick={handleSave} color="primary">
             Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+          {/* Delete Confirmation Dialog */}
+          <Dialog open={Boolean(deleteConfirmationDialog)} onClose={cancelDelete}>
+        <DialogTitle>Confirmation de suppression</DialogTitle>
+        <DialogContent>
+          Êtes-vous sûr de vouloir supprimer cette carte ?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete} color="secondary">
+            Non
+          </Button>
+          <Button onClick={confirmDelete} color="primary">
+            Oui
           </Button>
         </DialogActions>
       </Dialog>
