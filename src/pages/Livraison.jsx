@@ -24,7 +24,13 @@ const Livraison = () => {
   const [editFraisTransport, setEditFraisTransport] = useState('');
   const [editCurrency, setEditCurrency] = useState('');
   const [deleteConfirmationDialog, setDeleteConfirmationDialog] = useState(null);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [newFraisTransport, setNewFraisTransport] = useState('');
+  const [newCurrency, setNewCurrency] = useState('');
 
+  const handleAddClick = () => {
+    setAddDialogOpen(true);
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,7 +40,6 @@ const Livraison = () => {
         console.error('Error fetching livraisons:', error.message);
       }
     };
-
     fetchData();
   }, []);
 
@@ -60,7 +65,6 @@ const Livraison = () => {
       console.error('Error deleting Livraison:', error.message);
     }
   };
-
   const cancelDelete = () => {
     setDeleteConfirmationDialog(null);
   };
@@ -70,7 +74,6 @@ const Livraison = () => {
     setEditFraisTransport(livraison.fraisTransport);
     setEditCurrency(livraison.currency);
   };
-
 
   const handleSave = async () => {
     try {
@@ -91,9 +94,7 @@ const Livraison = () => {
         setEditingLivraison(null);
         setEditFraisTransport('');
         setEditCurrency('');
-      } else {
-        toast.error(`Failed to update Livraison ${editingLivraison._id}`);
-      }
+      }   
     } catch (error) {
       console.error('Error updating Livraison:', error.message);
     }
@@ -105,8 +106,40 @@ const Livraison = () => {
     setEditCurrency('');
   };
 
+  const handleAddLivraison = async () => {
+    try {
+        await Axios.post('http://localhost:5000/api/livraison/addlivraison', {
+        fraisTransport: newFraisTransport,
+        currency: newCurrency,
+      });
+      setAddDialogOpen(false);
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de la livraison :', error.message);
+    }
+  };
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Axios.get('http://localhost:5000/api/livraison/getAlllivraison');
+        setLivraisons(response.data.livraisons);
+      } catch (error) {
+        console.error('Error fetching livraisons:', error.message);
+      }
+    };
+  
+    fetchData();
+  }, [livraisons]); 
+  
   return (
-    <>
+    <  >
+      <div>
+      <Button onClick={handleAddClick} variant="contained" color="primary">
+        Ajouter
+      </Button>
+
+      </div>
       {livraisons.map((livraison) => (
         <Card
           key={livraison._id}
@@ -188,6 +221,36 @@ const Livraison = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
+  <DialogTitle>Ajouter Livraison</DialogTitle>
+  <DialogContent>
+    <TextField
+      label="Frais de transport"
+      variant="outlined"
+      fullWidth
+      value={newFraisTransport}
+      onChange={(e) => setNewFraisTransport(e.target.value)}
+    />
+    <TextField
+      label="Currency"
+      variant="outlined"
+      fullWidth
+      value={newCurrency}
+      onChange={(e) => setNewCurrency(e.target.value)}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setAddDialogOpen(false)} color="secondary">
+      Cancel
+    </Button>
+    <Button onClick={handleAddLivraison} color="primary">
+      Add
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </>
   );
 };
