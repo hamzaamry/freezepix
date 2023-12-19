@@ -12,7 +12,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch } from 'react-redux';
-import { setToken } from "../components/Store/AuthSlice";
+import { setToken } from "../Store/AuthSlice";
 
 const theme = createTheme({
   palette: {
