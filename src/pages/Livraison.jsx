@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import  tn  from '../Assets/tn.png'
 import {
   Typography,
   CardContent,
@@ -15,8 +16,31 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Box ,
   TextField,
+  Grid,
 } from '@mui/material';
+import { styled } from "@mui/system";
+
+const StyledCard = styled(Card)({
+  width: '30%',
+  height: '50%',
+  borderRadius: 12,
+  background: "linear-gradient(to right, #0F2027, #203A43, #2C5364)", 
+  boxShadow: "0 8px 10px rgba(0, 0, 0, 0.25)",
+  transition: "transform 0.3s ease-in-out",
+  color:'white',
+  "&:hover": {
+    transform: "scale(1.05)",
+  },
+});
+
+const StyledCardContainer = styled(Box)({
+  display: 'flex',
+  gap: '1%',
+  flexDirection: 'row', // Organise les cartes horizontalement
+  flexWrap: 'wrap',
+});
 
 const Livraison = () => {
   const [livraisons, setLivraisons] = useState([]);
@@ -133,53 +157,67 @@ const Livraison = () => {
   }, [livraisons]); 
   
   return (
-    <  >
-      <div>
+    <Box padding="2rem" display='flex' flexDirection='column' gap={1}>
+      <div  >
       <Button onClick={handleAddClick} variant="contained" color="primary">
         Ajouter
       </Button>
-
       </div>
+
+      <Grid container spacing={0} >
+      <StyledCardContainer>
+  
       {livraisons.map((livraison) => (
-        <Card
-          key={livraison._id}
-          style={{
-            width: '30%',
-            backgroundColor: '#f0f0f0',
-            border: '1px solid #ccc',
-            borderRadius: '12px',
-            boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            margin: '16px',
-          }}
-        >
-          <CardContent>
-            <Typography variant="h6" component="div">
-              Frais de transport: {livraison.fraisTransport}
-            </Typography>
-            <Typography variant="h7" color="text.secondary">
-              Currency: {livraison.currency}
-            </Typography>
-            <br />
-            <Typography variant="h7" color="text.secondary">
-              Date création: {livraison.createdAt}
-            </Typography>
-          </CardContent>
+    
+
+      
+      <StyledCard  key={livraison._id} style={{ margin: '15px' }} >
+      <CardContent>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-            <IconButton color="primary" onClick={() => handleEdit(livraison)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton color="secondary" onClick={() => handleDelete(livraison._id)}>
-              <DeleteIcon />
-            </IconButton>
+            <img src={tn} alt='tn' width='15%' />
           </div>
-        </Card>
+          <div>
+          <IconButton
+            color="primary"
+            aria-label="edit"
+            style={{ color: 'white' }}
+            onClick={() => handleEdit(livraison)}
+          >
+            <EditIcon color='white' />
+          </IconButton>
+
+          <IconButton
+  color="secondary"
+  aria-label="delete"
+  style={{ color: 'white' }}
+  onClick={() => handleDelete(livraison._id)}
+>
+  <DeleteIcon />
+</IconButton>
+
+          </div>
+        </div  >
+        <Typography marginTop="-1.5rem" variant="h6">Frais de transport: {livraison.fraisTransport} </Typography>
+        <Typography marginBottom="2.5rem"  variant="subtitle1"> Currency: {livraison.currency}</Typography>
+        <hr/>
+        <Typography variant="subtitle2">Date de création: {livraison.createdAt}</Typography>
+      </CardContent>
+    </StyledCard>
+
+
       ))}
+    </StyledCardContainer>
+</Grid>
+        <Box>
+
+        </Box>
+
+
 
       {/* Edit Dialog */}
-      <Dialog open={Boolean(editingLivraison)} onClose={handleClose}>
+      <Dialog open={editingLivraison !== null} onClose={handleClose}>
+
         <DialogTitle>Edit Livraison</DialogTitle>
         <DialogContent>
           <TextField
@@ -206,8 +244,12 @@ const Livraison = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+
           {/* Delete Confirmation Dialog */}
-          <Dialog open={Boolean(deleteConfirmationDialog)} onClose={cancelDelete}>
+       <Dialog open={deleteConfirmationDialog !== null} onClose={cancelDelete}>
+
         <DialogTitle>Confirmation de suppression</DialogTitle>
         <DialogContent>
           Êtes-vous sûr de vouloir supprimer cette carte ?
@@ -251,7 +293,7 @@ const Livraison = () => {
   </DialogActions>
 </Dialog>
 
-    </>
+    </Box>
   );
 };
 
