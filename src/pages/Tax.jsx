@@ -1,117 +1,249 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Typography,
-  CardContent,
-  Card,
-  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   IconButton,
+  Tooltip,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+  Box,
 } from '@mui/material';
-import { styled } from "@mui/system";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-const StyledCard = styled(Card)({
-  width: '30%',
-  height: '25%',
-  borderRadius: 12,
-  background: "linear-gradient(to right, #0F2027, #203A43, #2C5364)",
-  boxShadow: "0 8px 10px rgba(0, 0, 0, 0.25)",
-  transition: "transform 0.3s ease-in-out",
-  color: 'white',
-  "&:hover": {
-    transform: "scale(1.05)",
-  },
-});
-
-const StyledCardContainer = styled(Box)({
-  display: 'flex',
-  gap: '1%',
-  flexDirection: 'row', // Organise les cartes horizontalement
-  flexWrap: 'wrap',
-});
-
-const ButtonContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-});
+const initialData = [
+  { city: 'Paris', province: 'Île-de-France', type: 'VAT', rate: 0.2 },
+  { city: 'Marseille', province: 'Provence-Alpes-Côte d\'Azur', type: 'GST', rate: 0.15 },
+  // Ajoutez d'autres données selon vos besoins
+];
 
 const Tax = () => {
+  const [data, setData] = useState(initialData);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [selectedTax, setSelectedTax] = useState({});
+  const [editedTax, setEditedTax] = useState({});
+  const [newTax, setNewTax] = useState({
+    city: '',
+    province: '',
+    type: '',
+    rate: '',
+  });
+
+  const handleDelete = (index) => {
+    setSelectedTax(data[index]);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleEdit = (tax) => {
+    setSelectedTax(tax);
+    setEditedTax({ ...tax });
+    setOpenEditDialog(true);
+  };
+
+  const handleAdd = () => {
+    setNewTax({
+      city: '',
+      province: '',
+      type: '',
+      rate: '',
+    });
+    setOpenAddDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenEditDialog(false);
+    setOpenDeleteDialog(false);
+    setOpenAddDialog(false);
+  };
+
+  const handleUpdateTax = () => {
+    const newData = data.map((tax) =>
+      tax === selectedTax ? { ...tax, ...editedTax } : tax
+    );
+    setData(newData);
+    setOpenEditDialog(false);
+  };
+
+  const handleDeleteTax = () => {
+    const newData = data.filter((tax) => tax !== selectedTax);
+    setData(newData);
+    setOpenDeleteDialog(false);
+  };
+
+  const handleAddTax = () => {
+    const newData = [...data, newTax];
+    setData(newData);
+    setOpenAddDialog(false);
+  };
+
   return (
-    <Box padding="2rem" display='flex' flexDirection='column' gap={1} >
-
-        <h2>
-            Gestion de Tax
-        </h2>
-
+    <div>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <h2>Gestion de Tax :</h2>
         <Box
           style={{
             display: "flex",
             height: "3rem",
           }}
         >
-        <Button
+          <Button
             variant="contained"
-            type="submit"
+            onClick={handleAdd}
             style={{
               transition: "box-shadow 0.3s",
               backgroundColor: "#000000",
               color: "#ffffff",
-              width:'20%'
             }}
             sx={{ "&:hover": { boxShadow: "0 0 8px 2px #000000" } }}
           >
             Ajouter
           </Button>
+        </Box>
+      </Box>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>City</TableCell>
+              <TableCell>Shipping Province</TableCell>
+              <TableCell>Tax Type</TableCell>
+              <TableCell>Tax Rate</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.city}</TableCell>
+                <TableCell>{row.province}</TableCell>
+                <TableCell>{row.type}</TableCell>
+                <TableCell>{row.rate}</TableCell>
+                <TableCell>
+                  <Tooltip title="Edit">
+                    <IconButton onClick={() => handleEdit(row)}>
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton onClick={() => handleDelete(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-          </Box>
+      {/* Dialog for editing tax */}
+      <Dialog open={openEditDialog} onClose={handleDialogClose}>
+        <DialogTitle>Edit Tax</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="City"
+            value={editedTax.city || ''}
+            onChange={(e) => setEditedTax({ ...editedTax, city: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label="Shipping Province"
+            value={editedTax.province || ''}
+            onChange={(e) => setEditedTax({ ...editedTax, province: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label="Tax Type"
+            value={editedTax.type || ''}
+            onChange={(e) => setEditedTax({ ...editedTax, type: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label="Tax Rate"
+            value={editedTax.rate || ''}
+            onChange={(e) => setEditedTax({ ...editedTax, rate: e.target.value })}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleUpdateTax} color="primary">
+            Update
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      <StyledCardContainer>
-        {/* Exemple de carte statique 1 */}
-        <StyledCard style={{ margin: '15px' }}>
-          <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography  variant="h6">City: Example City 1</Typography>
-              <ButtonContainer>
-                <IconButton color="primary" aria-label="edit" style={{ color: 'white' }}>
-                  <EditIcon color='white' />
-                </IconButton>
-                <IconButton color="secondary" aria-label="delete" style={{ color: 'white' }}>
-                  <DeleteIcon />
-                </IconButton>
-              </ButtonContainer>
-            </div>
-            <Typography variant="subtitle1">Shipping Province: Example Province 1</Typography>
-            <Typography variant="subtitle1">Tax Type: Example Type 1</Typography>
-            <Typography marginBottom="2.5rem" variant="subtitle1">Tax Rate: 10%</Typography>
-            <hr />
-            <Typography variant="subtitle2">Date de création: 2023-01-01</Typography>
-          </CardContent>
-        </StyledCard>
+      {/* Dialog for deleting tax */}
+      <Dialog open={openDeleteDialog} onClose={handleDialogClose}>
+        <DialogTitle>Delete Tax</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Êtes-vous sûr de vouloir supprimer la taxe pour {selectedTax.city}, {selectedTax.province}?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={handleDeleteTax} color="primary">
+            Supprimer
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        {/* Exemple de carte statique 2 */}
-        <StyledCard style={{ margin: '15px' }}>
-          <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="h6">City: Example City 2</Typography>
-              <ButtonContainer>
-                <IconButton color="primary" aria-label="edit" style={{ color: 'white' }}>
-                  <EditIcon color='white' />
-                </IconButton>
-                <IconButton color="secondary" aria-label="delete" style={{ color: 'white' }}>
-                  <DeleteIcon />
-                </IconButton>
-              </ButtonContainer>
-            </div>
-            <Typography variant="subtitle1">Shipping Province: Example Province 2</Typography>
-            <Typography variant="subtitle1">Tax Type: Example Type 2</Typography>
-            <Typography marginBottom="2.5rem" variant="subtitle1">Tax Rate: 15%</Typography>
-            <hr />
-            <Typography variant="subtitle2">Date de création: 2023-02-01</Typography>
-          </CardContent>
-        </StyledCard>
-      </StyledCardContainer>
-    </Box>
+      {/* Dialog for adding new tax */}
+      <Dialog open={openAddDialog} onClose={handleDialogClose}>
+        <DialogTitle>Ajouter une Taxe</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="City"
+            value={newTax.city || ''}
+            onChange={(e) => setNewTax({ ...newTax, city: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label="Shipping Province"
+            value={newTax.province || ''}
+            onChange={(e) => setNewTax({ ...newTax, province: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label="Tax Type"
+            value={newTax.type || ''}
+            onChange={(e) => setNewTax({ ...newTax, type: e.target.value })}
+            fullWidth
+          />
+          <TextField
+            label="Tax Rate"
+            value={newTax.rate || ''}
+            onChange={(e) => setNewTax({ ...newTax, rate: e.target.value })}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={handleAddTax} color="primary">
+            Ajouter
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 };
 
