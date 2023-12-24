@@ -16,7 +16,7 @@ import Customers from '../pages/Customers'
 import Image from '../pages/Image';
 import Livraison from '../pages/Livraison';
 import MarketingUser from '../pages/MarketingUser';
-import Shipping from '../pages/Shipping';
+import Coupon from '../pages/Coupon';
 
 import Tax from '../pages/Tax';
 
@@ -49,6 +49,7 @@ const isAuthenticated = useSelector((state) => !!state.auth.token);
         <Route path="/Livraison" element={<Livraison />} />
         <Route path="/MarketingUser" element={<MarketingUser />} />
         <Route path="/Tax" element={<Tax />} />
+        <Route path="/Coupon" element={<Coupon />} />
         
     </Routes>
   )

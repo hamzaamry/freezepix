@@ -163,7 +163,7 @@ const SideBar = () => {
 
                 <Item
                   title="gestion des coupons"
-                  to="/GestionUser"
+                  to="/Coupon"
                   icon={<DiscountIcon />}
                   selected={selected}
                   setSelected={setSelected}
