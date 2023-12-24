@@ -25,16 +25,12 @@ const ProfilCard = () => {
         const response = await axios.get(`http://localhost:5000/api/admin/getOne/${userId}`);
         console.log("Réponse de l'API pour obtenir les données :", response)
         setUserData(response.data);
-
-        // Stocker les données dans le localStorage
         localStorage.setItem('userData', JSON.stringify(response.data));
       } catch (error) {
-        // Gérer les erreurs de requête
         console.error("Erreur lors de la récupération des données utilisateur :", error);
       }
     };
 
-    // Vérifier si l'utilisateur est authentifié avant de récupérer les données
     if (isAuthenticated) {
       fetchData();
     } else {

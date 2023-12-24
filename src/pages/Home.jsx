@@ -7,6 +7,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import GroupIcon from '@mui/icons-material/Group';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { Box } from '@mui/material';
 
 const Home = () => {
@@ -21,30 +22,34 @@ const Home = () => {
 */
   return (
     <div>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between" flexWrap="wrap">
         <CustomCard
-          title="TOTAL BUDGET"
+          title="BUDGET TOTAL "
           icon={<MonetizationOnIcon />}
           color="#2196F3"
           value="$24k"
+          style={{ flex: 1, minWidth: 200, maxWidth: 300, margin: '0 10px 20px' }}
         />
         <CustomCard
-          title="TOTAL CUSTOMERS"
+          title="TOTAL DES UTILISATEURS"
           icon={<GroupIcon />}
           color="#2196F3"
           value="1.6k"
+          style={{ flex: 1, minWidth: 200, maxWidth: 300, margin: '0 10px 20px' }}
         />
         <CustomCard
-          title="TOTAL ADMINS"
-          icon={<TaskAltIcon />}
+          title="VENTE PAR JOUR"
+          icon={<HowToRegIcon />}
           color="#2196F3"
-          value="7"
+          value="150"
+          style={{ flex: 1, minWidth: 200, maxWidth: 300, margin: '0 10px 20px' }}
         />
-        <CustomCard
-          title="TOTAL PROFITS"
+         <CustomCard
+          title="NOMBRE DE COMMANDES NON LIVRÉES"
           icon={<EuroSymbolIcon />}
           color="#2196F3"
-          value="$15k"
+          value="21"
+          style={{ flex: 1, minWidth: 200, maxWidth: 300, margin: '0 10px 20px' }}
         />
       </Box>
 
@@ -56,4 +61,4 @@ const Home = () => {
   );
 }
 
-export default Home
+export default Home;
