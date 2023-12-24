@@ -10,9 +10,8 @@ import {
 import Black from "../Assets/logo/Black.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import { useDispatch } from 'react-redux';
-import { setToken } from "../Store/AuthSlice";
+import { setToken , setUser } from "../Store/AuthSlice";
 
 const theme = createTheme({
   palette: {
@@ -42,10 +41,16 @@ const Signin = () => {
         password,
       });
       console.log("Login successful:", response.data);
+      localStorage.setItem('token', response.data.token);
+
+      console.log("//////////  token from signin page : ", response.data.token )
+      console.log("//////////  user from signin page :" , response.data )
 
       dispatch(setToken(response.data.token));
-      
+      dispatch(setUser(response.data)); 
       navigate("/home");
+
+
     } catch (error) {
       console.error("Error signing in:", error.message);
     }

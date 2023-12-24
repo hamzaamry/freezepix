@@ -13,12 +13,12 @@ const Home = () => {
   const isAuthenticated = useSelector((state) => !!state.auth.token);
   const navigate = useNavigate();
 
-  useEffect(() => {
+ /* useEffect(() => {
     if (!isAuthenticated) {
       navigate('/Signin');
     }
   }, [isAuthenticated, navigate]);
-
+*/
   return (
     <div>
       <Box display="flex" justifyContent="space-between">

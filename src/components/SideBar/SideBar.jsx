@@ -14,7 +14,6 @@ import ContactsIcon from '@mui/icons-material/Contacts';
 import SettingsIcon from '@mui/icons-material/Settings';
 import admin from "../../Assets/jpg/admin.jpg";
 
-// ... (votre code existant)
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
@@ -172,7 +171,7 @@ const SideBar = () => {
 
                 <Item
                   title="gestion des taxes"
-                  to="/GestionUser"
+                  to="/Tax"
                   icon={<SearchOffIcon />}
                   selected={selected}
                   setSelected={setSelected}

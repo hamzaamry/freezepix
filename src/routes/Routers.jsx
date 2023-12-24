@@ -18,6 +18,8 @@ import Livraison from '../pages/Livraison';
 import MarketingUser from '../pages/MarketingUser';
 import Shipping from '../pages/Shipping';
 
+import Tax from '../pages/Tax';
+
 
 const Routers = () => {
 
@@ -46,7 +48,7 @@ const isAuthenticated = useSelector((state) => !!state.auth.token);
         <Route path="/Image" element={<Image />} />
         <Route path="/Livraison" element={<Livraison />} />
         <Route path="/MarketingUser" element={<MarketingUser />} />
-        <Route path="/Shipping" element={<Shipping />} />
+        <Route path="/Tax" element={<Tax />} />
         
     </Routes>
   )

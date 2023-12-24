@@ -1,37 +1,74 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button, Card, CardContent, Typography, Box } from "@mui/material";
-import admin from "../../Assets/jpg/admin.jpg";
+import axios from "axios"; 
+import { useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 const UploadPic = () => {
-  const [userPhoto, setUserPhoto] = useState(admin);
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => !!state.auth.token);
+  const userId = useSelector((state) => state.auth.userId);
+  const [userData, setUserData] = useState(null);
+  const [userPhoto, setUserPhoto] = useState();
   const fileInputRef = useRef(null);
 
-  const handleFileUpload = (event) => {
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
 
-    if (file) {
+    if (file && file.size <= MAX_FILE_SIZE) {
       const reader = new FileReader();
 
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         setUserPhoto(e.target.result);
-      };
 
+        try {
+          await axios.put(`http://localhost:5000/api/admin/uploadImage/${userId}`, {
+            photo: e.target.result,
+          });
+          const response = await axios.get(`http://localhost:5000/api/admin/getOne/${userId}`);
+          setUserData(response.data);
+
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour de la photo de profil :", error);
+        }
+      };
       reader.readAsDataURL(file);
+    }  else {
+      console.error("La taille du fichier est trop importante.");
     }
   };
-
   const handleImportClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  const userData = {
-    lastName: "Amri",
-    dateNaissance: "12/03/2002",
-    phone: 28585858,
-    adresse: "Tunisie",
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+
+    try {
+      const response = await axios.get(`http://localhost:5000/api/admin/getOne/${userId}`);
+
+      console.log( "////////// upload pic photo ////////// " ,  response.data.photo)
+
+        setUserPhoto(response.data.photo);
+        setUserData(response.data); 
+
+      }catch (error) {
+        console.error("Erreur lors de la récupération des données utilisateur :", error);
+      }
+    }
+
+    if (isAuthenticated) {
+      fetchData();
+    } else if (isAuthenticated === false) {
+      navigate('/Signin');
+    }
+
+
+  }, [isAuthenticated, navigate, userId]); 
 
   return (
     <Card
@@ -42,8 +79,8 @@ const UploadPic = () => {
         padding: "1rem 2rem",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // Center the content horizontally
-        justifyContent: "center", // Center the content vertically
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <img
@@ -58,7 +95,7 @@ const UploadPic = () => {
       />
 
       <CardContent style={{ padding: "2rem 5rem 1rem", textAlign: "center" }}>
-        <Typography variant="h5">{userData.lastName}</Typography>
+        <Typography variant="h5">{userData && userData.lastName}</Typography>
 
         <input
           type="file"
