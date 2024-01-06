@@ -25,7 +25,7 @@ const UploadPic = () => {
 
         try {
           await axios.put(`http://localhost:5000/api/admin/uploadImage/${userId}`, {
-            photo: e.target.result,
+            photo: e.target.result, //issue (format data)
           });
           const response = await axios.get(`http://localhost:5000/api/admin/getOne/${userId}`);
           setUserData(response.data);

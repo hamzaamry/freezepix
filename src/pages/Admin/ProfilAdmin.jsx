@@ -13,7 +13,7 @@ const ProfilAdmin = () => {
         <ProfilCard />
       </Box>
       <Box
-          style={{
+          style={{        // to remove 
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

@@ -254,6 +254,7 @@ const Livraison = () => {
             fullWidth
             value={editFraisTransport}
             onChange={(e) => setEditFraisTransport(e.target.value)}
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Currency"
@@ -261,6 +262,7 @@ const Livraison = () => {
             fullWidth
             value={editCurrency}
             onChange={(e) => setEditCurrency(e.target.value)}
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>
@@ -298,6 +300,7 @@ const Livraison = () => {
             fullWidth
             value={newFraisTransport}
             onChange={(e) => setNewFraisTransport(e.target.value)}
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Currency"
@@ -305,6 +308,7 @@ const Livraison = () => {
             fullWidth
             value={newCurrency}
             onChange={(e) => setNewCurrency(e.target.value)}
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>

@@ -157,24 +157,28 @@ const Tax = () => {
             value={editedTax.city || ''}
             onChange={(e) => setEditedTax({ ...editedTax, city: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Shipping Province"
             value={editedTax.province || ''}
             onChange={(e) => setEditedTax({ ...editedTax, province: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Tax Type"
             value={editedTax.type || ''}
             onChange={(e) => setEditedTax({ ...editedTax, type: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Tax Rate"
             value={editedTax.rate || ''}
             onChange={(e) => setEditedTax({ ...editedTax, rate: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>
@@ -209,29 +213,33 @@ const Tax = () => {
       <Dialog open={openAddDialog} onClose={handleDialogClose}>
         <DialogTitle>Ajouter une Taxe</DialogTitle>
         <DialogContent>
-          <TextField
+          <TextField 
             label="City"
             value={newTax.city || ''}
             onChange={(e) => setNewTax({ ...newTax, city: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Shipping Province"
             value={newTax.province || ''}
             onChange={(e) => setNewTax({ ...newTax, province: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Tax Type"
             value={newTax.type || ''}
             onChange={(e) => setNewTax({ ...newTax, type: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Tax Rate"
             value={newTax.rate || ''}
             onChange={(e) => setNewTax({ ...newTax, rate: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>

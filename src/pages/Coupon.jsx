@@ -149,12 +149,14 @@ const Coupon = () => {
             value={editedCoupon.code || ''}
             onChange={(e) => setEditedCoupon({ ...editedCoupon, code: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Remise"
             value={editedCoupon.discount || ''}
             onChange={(e) => setEditedCoupon({ ...editedCoupon, discount: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>
@@ -194,12 +196,14 @@ const Coupon = () => {
             value={newCoupon.code || ''}
             onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
           <TextField
             label="Remise"
             value={newCoupon.discount || ''}
             onChange={(e) => setNewCoupon({ ...newCoupon, discount: e.target.value })}
             fullWidth
+            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>
