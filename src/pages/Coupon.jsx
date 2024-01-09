@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Table,
   TableBody,
@@ -8,7 +9,6 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Tooltip,
   Button,
   Dialog,
   DialogTitle,
@@ -21,73 +21,142 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-const initialData = [
-  { code: 'CODE123', discount: 0.1 },
-  { code: 'DISCOUNT50', discount: 0.5 },
-  // Ajoutez d'autres données selon vos besoins
-];
-
 const Coupon = () => {
-  const [data, setData] = useState(initialData);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openAddDialog, setOpenAddDialog] = useState(false);
-  const [selectedCoupon, setSelectedCoupon] = useState({});
-  const [editedCoupon, setEditedCoupon] = useState({});
-  const [newCoupon, setNewCoupon] = useState({
-    code: '',
-    discount: '',
+  const [codes, setCodes] = useState([]);
+  const [dialog, setDialog] = useState({
+    open: false,
+    type: '',
+    data: {},
   });
 
-  const handleDelete = (index) => {
-    setSelectedCoupon(data[index]);
-    setOpenDeleteDialog(true);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/code/getAllCode');
+      if (response.data.success) {
+        setCodes(response.data.allCodeCooperations);
+      } else {
+        console.error('Error fetching data:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
-  const handleEdit = (coupon) => {
-    setSelectedCoupon(coupon);
-    setEditedCoupon({ ...coupon });
-    setOpenEditDialog(true);
-  };
-
-  const handleAdd = () => {
-    setNewCoupon({
-      code: '',
-      discount: '',
-    });
-    setOpenAddDialog(true);
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleDialogClose = () => {
-    setOpenEditDialog(false);
-    setOpenDeleteDialog(false);
-    setOpenAddDialog(false);
+    setDialog({ open: false, type: '', data: {} });
   };
 
-  const handleUpdateCoupon = () => {
-    const newData = data.map((coupon) =>
-      coupon === selectedCoupon ? { ...coupon, ...editedCoupon } : coupon
-    );
-    setData(newData);
-    setOpenEditDialog(false);
+  const handleDelete = (codeId) => {
+    setDialog({ open: true, type: 'delete', data: { codeId } });
   };
 
-  const handleDeleteCoupon = () => {
-    const newData = data.filter((coupon) => coupon !== selectedCoupon);
-    setData(newData);
-    setOpenDeleteDialog(false);
+  const handleConfirmDelete = () => {
+    axios.delete(`http://localhost:5000/api/code/deleteCode/${dialog.data.codeId}`)
+      .then(response => {
+        if (response.data.success) {
+          setCodes(codes.filter(code => code._id !== dialog.data.codeId));
+        } else {
+          console.error('Error deleting code:', response.data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting code:', error);
+      })
+      .finally(() => {
+        handleDialogClose();
+      });
   };
 
-  const handleAddCoupon = () => {
-    const newData = [...data, newCoupon];
-    setData(newData);
-    setOpenAddDialog(false);
+  const handleEdit = (code) => {
+    setDialog({ open: true, type: 'edit', data: { code, editedCode: { ...code } } });
+  };
+
+  const handleEditSave = () => {
+    if (dialog.data && dialog.data.code && dialog.data.editedCode) {
+      axios.put(`http://localhost:5000/api/code/updateCode/${dialog.data.code._id}`, dialog.data.editedCode)
+        .then(response => {
+          if (response.data.success) {
+            setCodes(codes.map(code => (code._id === dialog.data.code._id ? response.data.updatedCode : code)));
+          } else {
+            console.error('Error updating code:', response.data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error updating code:', error);
+        })
+        .finally(() => {
+          // Close the dialog
+          handleDialogClose();
+        });
+    } else {
+      console.error('Invalid dialog data, code, or editedCode.');
+      // Close the dialog to prevent further issues
+      handleDialogClose();
+    }
+  };
+  
+
+  const handleAddDialogOpen = () => {
+    setDialog({ open: true, type: 'add', data: { newCode: { code: '', dateDebuit: '', dateFin: '', percentReduce: 0 } } });
+  };
+
+  const handleAddDialogSave = () => {
+    axios.post('http://localhost:5000/api/code/addCode', dialog.data.newCode)
+      .then(response => {
+        if (response.data.success) {
+          setCodes([...codes, response.data.newCode]);
+
+        // Close the dialog
+        handleDialogClose();
+        //window.location.reload();
+        } else {
+          console.error('Error adding code:', response.data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error adding code:', error);
+      })
+      .finally(() => {
+        handleDialogClose();
+      });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDialog(prev => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        editedCode: {
+          ...prev.data.editedCode,
+          [name]: value,
+        },
+      },
+    }));
+  };
+
+  const handleNewCodeInputChange = (e) => {
+    const { name, value } = e.target;
+    setDialog(prev => ({
+      ...prev,
+      data: {
+        ...prev.data,
+        newCode: {
+          ...prev.data.newCode,
+          [name]: value,
+        },
+      },
+    }));
   };
 
   return (
     <div>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <h2>Gestion des Codes de Remise :</h2>
+        <h2>Gestion des coupons</h2>
         <Box
           style={{
             display: "flex",
@@ -96,7 +165,8 @@ const Coupon = () => {
         >
           <Button
             variant="contained"
-            onClick={handleAdd}
+            onClick={handleAddDialogOpen}
+            type="submit"
             style={{
               transition: "box-shadow 0.3s",
               backgroundColor: "#000000",
@@ -108,31 +178,32 @@ const Coupon = () => {
           </Button>
         </Box>
       </Box>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Code</TableCell>
-              <TableCell>Remise</TableCell>
+              <TableCell>Date Debut</TableCell>
+              <TableCell>Date Fin</TableCell>
+              <TableCell>Percent Reduce</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.code}</TableCell>
-                <TableCell>{row.discount}</TableCell>
+            {codes.map(code => (
+              <TableRow key={code._id}>
+                <TableCell>{code.code}</TableCell>
+                <TableCell>{code.dateDebuit}</TableCell>
+                <TableCell>{code.dateFin}</TableCell>
+                <TableCell>{code.percentReduce}</TableCell>
                 <TableCell>
-                  <Tooltip title="Edit">
-                    <IconButton onClick={() => handleEdit(row)}>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete">
-                    <IconButton onClick={() => handleDelete(index)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton onClick={() => handleDelete(code._id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleEdit(code)}>
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -140,82 +211,73 @@ const Coupon = () => {
         </Table>
       </TableContainer>
 
-      {/* Dialog for editing coupon */}
-      <Dialog open={openEditDialog} onClose={handleDialogClose}>
-        <DialogTitle>Modifier le Code de Remise</DialogTitle>
+      <Dialog open={dialog.open} onClose={handleDialogClose}>
+        <DialogTitle>{dialog.type === 'add' ? 'Ajouter un nouveau code' : 'Edit Code'}</DialogTitle>
         <DialogContent>
-          <TextField
-            label="Code"
-            value={editedCoupon.code || ''}
-            onChange={(e) => setEditedCoupon({ ...editedCoupon, code: e.target.value })}
-            fullWidth
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
-          />
-          <TextField
-            label="Remise"
-            value={editedCoupon.discount || ''}
-            onChange={(e) => setEditedCoupon({ ...editedCoupon, discount: e.target.value })}
-            fullWidth
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
-          />
+          {dialog.type === 'add' || (dialog.type === 'edit' && dialog.data.code) ? (
+            <>
+              <TextField
+                label="Code"
+                name="code"
+                value={dialog.type === 'add' ? dialog.data.newCode.code : dialog.data.editedCode.code}
+                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
+                fullWidth
+              />
+              <TextField
+                label="Date Debut"
+                name="dateDebuit"
+                type="date"
+                value={dialog.type === 'add' ? dialog.data.newCode.dateDebuit : dialog.data.editedCode.dateDebuit}
+                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
+                fullWidth
+              />
+              <TextField
+                label="Date Fin"
+                name="dateFin"
+                type="date"
+                value={dialog.type === 'add' ? dialog.data.newCode.dateFin : dialog.data.editedCode.dateFin}
+                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
+                fullWidth
+              />
+              <TextField
+                label="Percent Reduce"
+                name="percentReduce"
+                type="number"
+                value={dialog.type === 'add' ? dialog.data.newCode.percentReduce : dialog.data.editedCode.percentReduce}
+                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
+                fullWidth
+              />
+            </>
+          ) : (
+            <Typography>No code selected</Typography>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Annuler
-          </Button>
-          <Button onClick={handleUpdateCoupon} color="primary">
-            Modifier
-          </Button>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          {dialog.type === 'add' ? (
+            <Button onClick={handleAddDialogSave}>Save</Button>
+          ) : (
+            <Button onClick={handleEditSave}>Save</Button>
+          )}
         </DialogActions>
       </Dialog>
 
-      {/* Dialog for deleting coupon */}
-      <Dialog open={openDeleteDialog} onClose={handleDialogClose}>
-        <DialogTitle>Supprimer le Code de Remise</DialogTitle>
+      <Dialog open={dialog.open && dialog.type === 'delete'} onClose={handleDialogClose}>
+        <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography>
-            Êtes-vous sûr de vouloir supprimer le code de remise {selectedCoupon.code}?
+            Are you sure you want to delete this code?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Annuler
-          </Button>
-          <Button onClick={handleDeleteCoupon} color="primary">
-            Supprimer
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog for adding new coupon */}
-      <Dialog open={openAddDialog} onClose={handleDialogClose}>
-        <DialogTitle>Ajouter un Code de Remise</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Code"
-            value={newCoupon.code || ''}
-            onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value })}
-            fullWidth
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
-          />
-          <TextField
-            label="Remise"
-            value={newCoupon.discount || ''}
-            onChange={(e) => setNewCoupon({ ...newCoupon, discount: e.target.value })}
-            fullWidth
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Annuler
-          </Button>
-          <Button onClick={handleAddCoupon} color="primary">
-            Ajouter
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} variant="contained" color="secondary">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
-};
+}
+
 export default Coupon;
