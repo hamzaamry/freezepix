@@ -89,12 +89,10 @@ const Coupon = () => {
           console.error('Error updating code:', error);
         })
         .finally(() => {
-          // Close the dialog
           handleDialogClose();
         });
     } else {
       console.error('Invalid dialog data, code, or editedCode.');
-      // Close the dialog to prevent further issues
       handleDialogClose();
     }
   };
@@ -109,8 +107,6 @@ const Coupon = () => {
       .then(response => {
         if (response.data.success) {
           setCodes([...codes, response.data.newCode]);
-
-        // Close the dialog
         handleDialogClose();
         //window.location.reload();
         } else {

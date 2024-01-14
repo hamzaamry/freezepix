@@ -21,8 +21,6 @@ const Admin = () => {
   const [selectedAdmin, setSelectedAdmin] = useState(null);
 
   const navigate = useNavigate();
-
-  // Définition de la fonction handleDeleteAdmin avant son utilisation
   const handleDeleteAdmin = async (adminId) => {
     try {
       await axios.delete(
@@ -32,7 +30,6 @@ const Admin = () => {
         position: toast.POSITION.TOP_CENTER,
       });
 
-      // Actualisez la liste des administrateurs après la suppression
       const response = await axios.get(
         "http://localhost:5000/api/admin/getAll"
       );
@@ -92,9 +89,10 @@ const Admin = () => {
 
   const columns = [
     { field: "_id", headerName: "ID", width: 90 },
+     //{ field: "photo", headerName: "photo", width: 250, editable: false },
     { field: "name", headerName: "Name", width: 200, editable: true },
     { field: "email", headerName: "Email", width: 300, editable: true },
-    { field: "password", headerName: "Password", width: 250, editable: true },
+   
     {
       field: "action",
       headerName: "Action",
