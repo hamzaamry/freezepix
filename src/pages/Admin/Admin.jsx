@@ -54,6 +54,7 @@ const Admin = () => {
       await axios.put(`http://localhost:5000/api/admin/${selectedAdmin._id}`, {
         name: selectedAdmin.name,
         email: selectedAdmin.email,
+        phone: selectedAdmin.phone,
       });
 
       toast.success("Admin mis à jour avec succès!", {
@@ -69,8 +70,6 @@ const Admin = () => {
         id: index + 1,
       }));
       setAdmins(adminsWithIds);
-
-      // Réinitialisez l'état selectedAdmin
       setSelectedAdmin(null);
     } catch (error) {
       console.error("Error updating admin:", error.message);
@@ -88,11 +87,22 @@ const Admin = () => {
   };
 
   const columns = [
-    { field: "_id", headerName: "ID", width: 90 },
-     //{ field: "photo", headerName: "photo", width: 250, editable: false },
+    {
+      field: "photo",
+      headerName: "Photo",
+      width: 80,
+      editable: false,
+      renderCell: (params) => (
+        <img
+          src={params.value}
+          alt="profil"
+          style={{ width: "45px", height: "45px", borderRadius: "50%" }}
+        />
+      ),
+    },
     { field: "name", headerName: "Name", width: 200, editable: true },
     { field: "email", headerName: "Email", width: 300, editable: true },
-   
+    { field: "phone", headerName: "phone", width: 200, editable: true },
     {
       field: "action",
       headerName: "Action",
@@ -214,6 +224,18 @@ const Admin = () => {
               margin:'1rem'
             }}
           />
+
+          <TextField
+            label="Nouveau numero"
+            value={selectedAdmin.phone}
+            onChange={(e) =>
+              setSelectedAdmin({ ...selectedAdmin, phone: e.target.value })
+            }
+            style={{
+              margin:'1rem'
+            }}
+          />
+
           <Button    style={{
               margin:'1rem'
             }} onClick={handleUpdateAdmin}>Enregistrer</Button>
