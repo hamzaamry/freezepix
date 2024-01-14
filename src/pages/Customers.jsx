@@ -85,10 +85,6 @@ const Customers = () => {
   };
 
   const columns = [
-    { field: "name", headerName: "Nom", width: 80, editable: false },
-    { field: "lastName", headerName: "Prénom", width: 80, editable: false },
-    { field: "email", headerName: "Email", width: 190, editable: false },
-    { field: "phone", headerName: "Numéro tel", width: 100, editable: false },
     {
       field: "photo",
       headerName: "Photo",
@@ -102,6 +98,11 @@ const Customers = () => {
         />
       ),
     },
+    { field: "name", headerName: "Nom", width: 80, editable: false },
+    { field: "lastName", headerName: "Prénom", width: 80, editable: false },
+    { field: "email", headerName: "Email", width: 190, editable: false },
+    { field: "phone", headerName: "Numéro tel", width: 100, editable: false },
+
     { field: "role", headerName: "Rôle", width: 150, editable: false },
     { field: "adresse", headerName: "Adresse", width: 180, editable: false },
     { field: "age", headerName: "Age", width: 50, editable: false },
