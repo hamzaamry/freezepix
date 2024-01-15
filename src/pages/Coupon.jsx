@@ -148,7 +148,7 @@ const Coupon = () => {
           <Button
             variant="contained"
             type="submit"
-            onClick={handleAddCoupon()}
+            onClick={() => setAddDialogOpen(true)}
             style={{
               transition: "box-shadow 0.3s",
               backgroundColor: "#000000",
@@ -253,7 +253,6 @@ const Coupon = () => {
           <Button onClick={cancelUpdateCoupon} color="primary">
             Annuler
           </Button>
-          {/* Ajoutez un bouton pour confirmer la mise à jour */}
           <Button onClick={() => confirmUpdateCoupon(couponToUpdate)} color="primary">
             Mettre à jour
           </Button>
