@@ -14,20 +14,55 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
   Typography,
   Box,
+  TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Coupon = () => {
   const [codes, setCodes] = useState([]);
-  const [dialog, setDialog] = useState({
-    open: false,
-    type: '',
-    data: {},
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [couponToDelete, setCouponToDelete] = useState(null);
+  const [couponToUpdate, setCouponToUpdate] = useState(null);
+  const [newCouponData, setNewCouponData] = useState({
+    code: '',
+    dateDebuit: '',
+    dateFin: '',
+    percentReduce: '',
   });
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+
+  const handleAddCoupon = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/code/addCode', newCouponData);
+      setAddDialogOpen(false);
+      fetchData();
+      toast.success("Nouveau coupon ajouté avec succès!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } catch (e) {
+      console.error("Erreur lors de l'ajout du coupon :", e.message);
+      toast.error("Erreur lors de l'ajout du coupon. Veuillez réessayer.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  }
+
+  const cancelAddCoupon = () => {
+    setAddDialogOpen(false);
+    setNewCouponData({
+      code: '',
+      dateDebuit: '',
+      dateFin: '',
+      percentReduce: '',
+    });
+  }
+
 
   const fetchData = async () => {
     try {
@@ -35,10 +70,10 @@ const Coupon = () => {
       if (response.data.success) {
         setCodes(response.data.allCodeCooperations);
       } else {
-        console.error('Error fetching data:', response.data.message);
+        console.error('Erreur lors de la récupération des données :', response.data.message);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Erreur lors de la récupération des données :', error);
     }
   };
 
@@ -46,108 +81,59 @@ const Coupon = () => {
     fetchData();
   }, []);
 
-  const handleDialogClose = () => {
-    setDialog({ open: false, type: '', data: {} });
-  };
+  const handleDeleteCoupon = async (codesId) => {
+    setCouponToDelete(codesId);
+    setDeleteDialogOpen(true);
+  }
 
-  const handleDelete = (codeId) => {
-    setDialog({ open: true, type: 'delete', data: { codeId } });
-  };
-
-  const handleConfirmDelete = () => {
-    axios.delete(`http://localhost:5000/api/code/deleteCode/${dialog.data.codeId}`)
-      .then(response => {
-        if (response.data.success) {
-          setCodes(codes.filter(code => code._id !== dialog.data.codeId));
-        } else {
-          console.error('Error deleting code:', response.data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error deleting code:', error);
-      })
-      .finally(() => {
-        handleDialogClose();
+  const confirmDeleteCoupon = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/code/deletcode/${couponToDelete}`);
+      setDeleteDialogOpen(false);
+      fetchData();
+      toast.success("Coupon supprimé avec succès!", {
+        position: toast.POSITION.TOP_CENTER,
       });
-  };
-
-  const handleEdit = (code) => {
-    setDialog({ open: true, type: 'edit', data: { code, editedCode: { ...code } } });
-  };
-
-  const handleEditSave = () => {
-    if (dialog.data && dialog.data.code && dialog.data.editedCode) {
-      axios.put(`http://localhost:5000/api/code/updateCode/${dialog.data.code._id}`, dialog.data.editedCode)
-        .then(response => {
-          if (response.data.success) {
-            setCodes(codes.map(code => (code._id === dialog.data.code._id ? response.data.updatedCode : code)));
-          } else {
-            console.error('Error updating code:', response.data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error updating code:', error);
-        })
-        .finally(() => {
-          handleDialogClose();
-        });
-    } else {
-      console.error('Invalid dialog data, code, or editedCode.');
-      handleDialogClose();
+    } catch (e) {
+      console.error("Erreur lors de la suppression du coupon :", e.message);
+      toast.error("Erreur lors de la suppression du coupon. Veuillez réessayer.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
-  };
-  
+  }
 
-  const handleAddDialogOpen = () => {
-    setDialog({ open: true, type: 'add', data: { newCode: { code: '', dateDebuit: '', dateFin: '', percentReduce: 0 } } });
-  };
+  const cancelDeleteCoupon = () => {
+    setDeleteDialogOpen(false);
+    setCouponToDelete(null);
+  }
 
-  const handleAddDialogSave = () => {
-    axios.post('http://localhost:5000/api/code/addCode', dialog.data.newCode)
-      .then(response => {
-        if (response.data.success) {
-          setCodes([...codes, response.data.newCode]);
-        handleDialogClose();
-        //window.location.reload();
-        } else {
-          console.error('Error adding code:', response.data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error adding code:', error);
-      })
-      .finally(() => {
-        handleDialogClose();
+  const handleUpdateCoupon = (code) => {
+    setCouponToUpdate(code);
+    setUpdateDialogOpen(true);
+  }
+
+  const confirmUpdateCoupon = async (updatedCouponData) => {
+    try {
+      await axios.put(`http://localhost:5000/api/code/updateCode/${couponToUpdate._id}`, updatedCouponData);
+      setUpdateDialogOpen(false);
+      fetchData();
+      toast.success("Coupon mis à jour avec succès!", {
+        position: toast.POSITION.TOP_CENTER,
       });
-  };
+    } catch (e) {
+      console.error("Erreur lors de la mise à jour du coupon :", e.message);
+      toast.error("Erreur lors de la mise à jour du coupon. Veuillez réessayer.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+  }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setDialog(prev => ({
-      ...prev,
-      data: {
-        ...prev.data,
-        editedCode: {
-          ...prev.data.editedCode,
-          [name]: value,
-        },
-      },
-    }));
-  };
+  const cancelUpdateCoupon = () => {
+    setUpdateDialogOpen(false);
+    setCouponToUpdate(null);
+  }
 
-  const handleNewCodeInputChange = (e) => {
-    const { name, value } = e.target;
-    setDialog(prev => ({
-      ...prev,
-      data: {
-        ...prev.data,
-        newCode: {
-          ...prev.data.newCode,
-          [name]: value,
-        },
-      },
-    }));
-  };
+
 
   return (
     <div>
@@ -161,8 +147,8 @@ const Coupon = () => {
         >
           <Button
             variant="contained"
-            onClick={handleAddDialogOpen}
             type="submit"
+            onClick={handleAddCoupon()}
             style={{
               transition: "box-shadow 0.3s",
               backgroundColor: "#000000",
@@ -194,10 +180,10 @@ const Coupon = () => {
                 <TableCell>{code.dateFin}</TableCell>
                 <TableCell>{code.percentReduce}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleDelete(code._id)}>
+                  <IconButton onClick={() => handleDeleteCoupon(code._id)}>
                     <DeleteIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleEdit(code)}>
+                  <IconButton onClick={() => handleUpdateCoupon(code)}>
                     <EditIcon />
                   </IconButton>
                 </TableCell>
@@ -207,71 +193,120 @@ const Coupon = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={dialog.open} onClose={handleDialogClose}>
-        <DialogTitle>{dialog.type === 'add' ? 'Ajouter un nouveau code' : 'Edit Code'}</DialogTitle>
-        <DialogContent>
-          {dialog.type === 'add' || (dialog.type === 'edit' && dialog.data.code) ? (
-            <>
-              <TextField
-                label="Code"
-                name="code"
-                value={dialog.type === 'add' ? dialog.data.newCode.code : dialog.data.editedCode.code}
-                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
-                fullWidth
-              />
-              <TextField
-                label="Date Debut"
-                name="dateDebuit"
-                type="date"
-                value={dialog.type === 'add' ? dialog.data.newCode.dateDebuit : dialog.data.editedCode.dateDebuit}
-                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
-                fullWidth
-              />
-              <TextField
-                label="Date Fin"
-                name="dateFin"
-                type="date"
-                value={dialog.type === 'add' ? dialog.data.newCode.dateFin : dialog.data.editedCode.dateFin}
-                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
-                fullWidth
-              />
-              <TextField
-                label="Percent Reduce"
-                name="percentReduce"
-                type="number"
-                value={dialog.type === 'add' ? dialog.data.newCode.percentReduce : dialog.data.editedCode.percentReduce}
-                onChange={dialog.type === 'add' ? handleNewCodeInputChange : handleInputChange}
-                fullWidth
-              />
-            </>
-          ) : (
-            <Typography>No code selected</Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          {dialog.type === 'add' ? (
-            <Button onClick={handleAddDialogSave}>Save</Button>
-          ) : (
-            <Button onClick={handleEditSave}>Save</Button>
-          )}
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={dialog.open && dialog.type === 'delete'} onClose={handleDialogClose}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+      {/* Boîte de dialogue de confirmation de suppression */}
+      <Dialog open={deleteDialogOpen} onClose={cancelDeleteCoupon}>
+        <DialogTitle>Confirmation de suppression</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete this code?
+            Êtes-vous sûr de vouloir supprimer ce coupon ?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleConfirmDelete} variant="contained" color="secondary">
-            Delete
+          <Button onClick={cancelDeleteCoupon} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={confirmDeleteCoupon} color="primary">
+            Supprimer
           </Button>
         </DialogActions>
       </Dialog>
+
+
+
+       {/* Boîte de dialogue de mise à jour des données */}
+       <Dialog open={updateDialogOpen} onClose={cancelUpdateCoupon}>
+        <DialogTitle>Modifier le coupon</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Nouveau code"
+            value={couponToUpdate ? couponToUpdate.code : ''}
+            onChange={(e) => setCouponToUpdate({ ...couponToUpdate, code: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            label="Date début"
+            value={couponToUpdate ? couponToUpdate.dateDebuit : ''}
+            onChange={(e) => setCouponToUpdate({ ...couponToUpdate, dateDebuit: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            label="Date fin"
+            value={couponToUpdate ? couponToUpdate.dateFin : ''}
+            onChange={(e) => setCouponToUpdate({ ...couponToUpdate, dateFin: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            label="Percent Reduce"
+            value={couponToUpdate ? couponToUpdate.percentReduce : ''}
+            onChange={(e) => setCouponToUpdate({ ...couponToUpdate, percentReduce: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelUpdateCoupon} color="primary">
+            Annuler
+          </Button>
+          {/* Ajoutez un bouton pour confirmer la mise à jour */}
+          <Button onClick={() => confirmUpdateCoupon(couponToUpdate)} color="primary">
+            Mettre à jour
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
+        {/* Boîte de dialogue d'ajout de nouveau coupon */}
+        <Dialog open={addDialogOpen} onClose={cancelAddCoupon}>
+        <DialogTitle>Ajouter un nouveau coupon</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Code"
+            value={newCouponData.code}
+            onChange={(e) => setNewCouponData({ ...newCouponData, code: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            label="Date début"
+            value={newCouponData.dateDebuit}
+            onChange={(e) => setNewCouponData({ ...newCouponData, dateDebuit: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            label="Date fin"
+            value={newCouponData.dateFin}
+            onChange={(e) => setNewCouponData({ ...newCouponData, dateFin: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            label="Percent Reduce"
+            value={newCouponData.percentReduce}
+            onChange={(e) => setNewCouponData({ ...newCouponData, percentReduce: e.target.value })}
+            fullWidth
+            margin="normal"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelAddCoupon} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={handleAddCoupon} color="primary">
+            Ajouter
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 }
