@@ -10,73 +10,138 @@ import {
   Paper,
   IconButton,
   Button,
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
   Typography,
-  Dialog as ConfirmDialog,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Tax = () => {
   const [taxData, setTaxData] = useState([]);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [selectedTax, setSelectedTax] = useState({});
-  const [updatedCity, setUpdatedCity] = useState('');
-  const [updatedShippingProvince, setUpdatedShippingProvince] = useState('');
-  const [updatedTaxType, setUpdatedTaxType] = useState('');
-  const [updatedTaxRate, setUpdatedTaxRate] = useState('');
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [newTaxData, setNewTaxData] = useState({
+    city: '',
+    shippingProvince: '',
+    taxType: '',
+    taxRate: '',
+  });
 
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [TaxToDelete, setTaxToDelete] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/tax/getAllTax');
+
+      if (response.data.success) {
+        setTaxData(response.data.tax[0].Country);
+      } else {
+        console.error('Erreur lors de la récupération des données :', response.data.message);
+      }
+    } catch (e) {
+      console.error('Erreur lors de la récupération des données :', e);
+    }
+  };
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/tax/getAllTax')
-      .then(response => {
-        setTaxData(response.data.tax[0].Country);
-      })
-      .catch(error => {
-        console.error('Error fetching tax data:', error);
-      });
+    fetchData();
   }, []);
 
-  const handleEditClick = (country) => {
-    setSelectedTax(country);
-    setUpdatedCity(country.city);
-    setUpdatedShippingProvince(country.ShippingProvince);
-    setUpdatedTaxType(country.TaxType);
-    setUpdatedTaxRate(country.TaxRate);
-    setOpenEditDialog(true);
+  const handleAddClick = () => {
+    setAddDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
-    setOpenEditDialog(false);
+  const handleAddDialogClose = () => {
+    setAddDialogOpen(false);
+    setNewTaxData({
+      city: '',
+      shippingProvince: '',
+      taxType: '',
+      taxRate: '',
+    });
   };
 
-  const handleUpdate = () => {
-    setOpenEditDialog(false);
+  const handleConfirmAdd = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/tax/addTax', {
+        Country: [newTaxData],
+      });
+        setAddDialogOpen(false);
+        fetchData();
+        toast.success('Nouvelles informations fiscales ajoutées avec succès!', {
+          position: toast.POSITION.TOP_CENTER,
+        });
+
+    } catch (e) {
+      console.error("Erreur lors de l'ajout des informations fiscales :", e.message);
+      toast.error("Erreur lors de l'ajout des informations fiscales. Veuillez réessayer.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
 
-  const handleDeleteClick = (country) => {
-    setSelectedTax(country);
-    setOpenDeleteDialog(true);
+
+
+  const handleDeleteClick = (taxId) => {
+    setTaxToDelete(taxId);
+    setDeleteDialogOpen(true);
   };
 
   const handleDeleteDialogClose = () => {
-    setOpenDeleteDialog(false);
+    setDeleteDialogOpen(false);
+    setTaxToDelete(null);
   };
 
-  const handleConfirmDelete = () => {
-    // Perform the delete logic here using axios or your preferred method
-    // After a successful delete, close the dialog and refresh the data
-    setOpenDeleteDialog(false);
+  const handleConfirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/tax/deletTax/${TaxToDelete}`);
+      setDeleteDialogOpen(false);
+      fetchData();
+      toast.success('Taxe supprimée avec succès!', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } catch (e) {
+      console.error("Erreur lors de la suppression de la taxe :", e.message);
+      toast.error("Erreur lors de la suppression de la taxe. Veuillez réessayer.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
   };
+
+
 
   return (
     <div>
-      <h2>Gestion de Tax</h2>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <h2>Gestion des taxes</h2>
+        <Box
+          style={{
+            display: 'flex',
+            height: '3rem',
+          }}
+        >
+          {/* Ajouter un gestionnaire d'événements onClick pour ouvrir la boîte de dialogue */}
+          <Button
+            variant="contained"
+            onClick={handleAddClick}
+            style={{
+              transition: 'box-shadow 0.3s',
+              backgroundColor: '#000000',
+              color: '#ffffff',
+            }}
+            sx={{ '&:hover': { boxShadow: '0 0 8px 2px #000000' } }}
+          >
+            Ajouter
+          </Button>
+        </Box>
+      </Box>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -89,17 +154,17 @@ const Tax = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {taxData.map(country => (
+            {taxData.map((country) => (
               <TableRow key={country._id}>
                 <TableCell>{country.city}</TableCell>
                 <TableCell>{country.ShippingProvince}</TableCell>
                 <TableCell>{country.TaxType}</TableCell>
                 <TableCell>{country.TaxRate}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleEditClick(country)}>
+                 <IconButton> 
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteClick(country)}>
+                  <IconButton onClick={() => handleDeleteClick(country._id)} >
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
@@ -109,56 +174,70 @@ const Tax = () => {
         </Table>
       </TableContainer>
 
-      {/* Update Dialog */}
-      <Dialog open={openEditDialog} onClose={handleDialogClose}>
-        <DialogTitle>Edit Tax Information</DialogTitle>
+      {/* Boîte de dialogue d'ajout de nouvelle taxe */}
+      <Dialog open={addDialogOpen} onClose={handleAddDialogClose}>
+        <DialogTitle>Ajouter une nouvelle taxe</DialogTitle>
         <DialogContent>
           <TextField
             label="City"
-            value={updatedCity}
-            onChange={(e) => setUpdatedCity(e.target.value)}
+            value={newTaxData.city}
+            onChange={(e) => setNewTaxData({ ...newTaxData, city: e.target.value })}
+            fullWidth
+            margin="normal"
           />
           <TextField
             label="Shipping Province"
-            value={updatedShippingProvince}
-            onChange={(e) => setUpdatedShippingProvince(e.target.value)}
+            value={newTaxData.shippingProvince}
+            onChange={(e) => setNewTaxData({ ...newTaxData, shippingProvince: e.target.value })}
+            fullWidth
+            margin="normal"
           />
           <TextField
             label="Tax Type"
-            value={updatedTaxType}
-            onChange={(e) => setUpdatedTaxType(e.target.value)}
+            value={newTaxData.taxType}
+            onChange={(e) => setNewTaxData({ ...newTaxData, taxType: e.target.value })}
+            fullWidth
+            margin="normal"
           />
           <TextField
             label="Tax Rate"
-            value={updatedTaxRate}
-            onChange={(e) => setUpdatedTaxRate(e.target.value)}
+            value={newTaxData.taxRate}
+            onChange={(e) => setNewTaxData({ ...newTaxData, taxRate: e.target.value })}
+            fullWidth
+            margin="normal"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleUpdate} color="primary">
-            Update
+          <Button onClick={handleAddDialogClose} color="primary">
+            Annuler
+          </Button>
+          <Button onClick={handleConfirmAdd} color="primary">
+            Ajouter
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Confirm Delete Dialog */}
-      <ConfirmDialog open={openDeleteDialog} onClose={handleDeleteDialogClose}>
-        <DialogTitle>Confirm Delete</DialogTitle>
+
+       {/* Boîte de dialogue de confirmation de suppression */}
+       <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
+        <DialogTitle>Confirmation de suppression</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete the tax information for {selectedTax.city}, {selectedTax.ShippingProvince}?
+            Êtes-vous sûr de vouloir supprimer cette taxe ?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteDialogClose}>Cancel</Button>
+          <Button onClick={handleDeleteDialogClose} color="primary">
+            Annuler
+          </Button>
           <Button onClick={handleConfirmDelete} color="error">
-            Delete
+            Supprimer
           </Button>
         </DialogActions>
-      </ConfirmDialog>
+      </Dialog>
+
     </div>
   );
-}
+};
 
 export default Tax;

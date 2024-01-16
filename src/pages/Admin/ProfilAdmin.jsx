@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
-import axios from "axios";
+import React from "react";
+import { Box, Button } from "@mui/material";
 
 import ProfilCard from "../../components/Profile/ProfilCard";
 import UploadPic from "../../components/Profile/UploadPic";
@@ -12,26 +11,7 @@ const ProfilAdmin = () => {
         <UploadPic />
         <ProfilCard />
       </Box>
-      <Box
-          style={{        // to remove 
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "5rem",
-          }}
-        >
-          <Button
-            variant="contained"
-            type="submit"
-            style={{
-              marginTop: "20px",
-              backgroundColor: "#000000",
-              color: "#ffffff",
-            }}
-          >
-            Save
-          </Button>
-        </Box>
+     
     </Box>
   );
 };

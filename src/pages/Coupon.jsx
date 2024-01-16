@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Typography,
-  Box,
-  TextField,
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -132,8 +116,6 @@ const Coupon = () => {
     setUpdateDialogOpen(false);
     setCouponToUpdate(null);
   }
-
-
 
   return (
     <div>
