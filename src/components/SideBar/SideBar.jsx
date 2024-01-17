@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Box, IconButton, Typography } from "@mui/material";
-import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Box, IconButton, Typography, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from "@mui/material";
+import { Sidebar } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import PeopleIcon from "@mui/icons-material/People";
@@ -12,26 +12,34 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import AspectRatioIcon from '@mui/icons-material/AspectRatio';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import SettingsIcon from '@mui/icons-material/Settings';
-import admin from "../../Assets/jpg/admin.jpg";
-
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+//import admin from "../../Assets/jpg/admin.jpg";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
     <Link to={to} style={{ textDecoration: "none", color: "inherit" }}>
-      <MenuItem
-        active={selected === title}
-        style={{
-          color: "#a3a2a2",
-        }}
+      <ListItemButton
+        selected={selected === title}
         onClick={() => setSelected(title)}
-        icon={icon}
       >
-        <Typography>{title}</Typography>
-      </MenuItem>
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={title} />
+      </ListItemButton>
     </Link>
+  );
+};
+
+const SubItem = ({ title, icon, selected, setSelected }) => {
+  return (
+    <ListItemButton
+      sx={{ pl: 4 }}
+      selected={selected === title}
+      onClick={() => setSelected(title)}
+    >
+      <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemText primary={title} />
+    </ListItemButton>
   );
 };
 
@@ -39,9 +47,11 @@ const SideBar = () => {
   const [settingsOption, setSettingsOption] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const [openSettings, setOpenSettings] = useState(true);
 
   const handleSettingsClick = () => {
     setSettingsOption((prev) => (prev === "" ? "settings" : ""));
+    setOpenSettings(!openSettings);
   };
 
   return (
@@ -65,137 +75,85 @@ const SideBar = () => {
       }}
     >
       <Sidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={settingsOption === "settings" ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            style={{
-              margin: "10px 0 15px 0",
-              color: "gray",
-            }}
-          >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="10px"
-              >
-                <img
-                  alt="profile-user"
-                  width="50px"
-                  height="50px"
-                  src={admin}
-                  style={{
-                    cursor: "pointer",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuIcon />
-                </IconButton>
-              </Box>
-            )}
-          </MenuItem>
 
-          {!isCollapsed && (
-            <Box mb="15px">
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              ></Box>
-            </Box>
-          )}
+        <Box display="flex" justifyContent="flex-end" alignItems="center" p={3}>
+          <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+            <MenuIcon />
+          </IconButton>
+        </Box>
 
-          <Box paddingLeft={isCollapsed ? undefined : "0%"}>
-            <Item
-              title="Dashboard"
-              to="/home"
-              icon={<HomeIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+        <List
+          sx={{
+            width: '100%',
+            maxWidth: 360,
+            bgcolor: 'background.paper',
+            marginLeft: '0.5rem'
+          }}
+        >
+          <Item
+            title="Dashboard"
+            to="/home"
+            icon={<HomeIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+          <ListItemButton onClick={handleSettingsClick}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Paramètres" />
+            {openSettings ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </ListItemButton>
 
-            {!isCollapsed && (
-              <>
-                <MenuItem
-                  onClick={handleSettingsClick}
-                  icon={<SettingsIcon />}
-                  style={{
-                    margin: "10px 0 15px 0",
-                    color: "gray",
-                  }}
-                >
-                  <Typography variant="h7" color="gray">
-                    Paramètres
-                  </Typography>
-                </MenuItem>
-              </>
-            )}
+          <Collapse in={openSettings} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <SubItem
+                title="gestion des admins"
+                icon={<PeopleIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <SubItem
+                title="gestion des clients"
+                icon={<ContactsIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <SubItem
+                title="gestion des livraisons"
+                icon={<LocalShippingIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <SubItem
+                title="gestion des coupons"
+                icon={<DiscountIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <SubItem
+                title="gestion des taxes"
+                icon={<SearchOffIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <SubItem
+                title="gestion taille d'image"
+                icon={<AspectRatioIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </List>
+          </Collapse>
 
-            {settingsOption === "settings" && (
-              <>
-                <Item
-                  title="gestion des admins"
-                  to="/Admin"
-                  icon={<PeopleIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="gestion des clients"
-                  to="/Customers"
-                  icon={<ContactsIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="gestion des livraisons"
-                  to="/Livraison"
-                  icon={<LocalShippingIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="gestion des coupons"
-                  to="/Coupon"
-                  icon={<DiscountIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="gestion des taxes"
-                  to="/Tax"
-                  icon={<SearchOffIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <Item
-                  title="gestion taille d'image"
-                  to="/GestionUser"
-                  icon={<AspectRatioIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </>
-            )}
-
-            <Item
-              title="Profil"
-              to="/ProfilAdmin"
-              icon={<AccountCircleIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-          </Box>
-        </Menu>
+          <Item
+            title="Profil"
+            to="/ProfilAdmin"
+            icon={<AccountCircleIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        </List>
       </Sidebar>
     </Box>
   );
