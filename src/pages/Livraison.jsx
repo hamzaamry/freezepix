@@ -7,20 +7,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import tn from "../Assets/tn.png";
-import {
-  Typography,
-  CardContent,
-  Card,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-  TextField,
-  Grid,
-} from "@mui/material";
+import { Typography, CardContent, Card, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, TextField, Grid } from "@mui/material";
 import { styled } from "@mui/system";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const StyledCard = styled(Card)({
   width: "30%",
@@ -38,11 +28,22 @@ const StyledCard = styled(Card)({
 const StyledCardContainer = styled(Box)({
   display: "flex",
   gap: "1%",
-  flexDirection: "row", // Organise les cartes horizontalement
+  flexDirection: "row", 
   flexWrap: "wrap",
 });
 
 const Livraison = () => {
+
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      navigate('/Signin');
+    }
+  }, [token, navigate]); 
+
+
+
   const [livraisons, setLivraisons] = useState([]);
   const [editingLivraison, setEditingLivraison] = useState(null);
   const [editFraisTransport, setEditFraisTransport] = useState("");

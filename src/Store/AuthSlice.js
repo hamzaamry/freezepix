@@ -1,15 +1,8 @@
-// store/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-
-// Fonction pour récupérer le token du localStorage lors de l'initialisation
-const getStoredToken = () => {
-  return localStorage.getItem('token');
-};
-
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    token: getStoredToken(), 
+    token: null, 
     user: null,
     userId: null,
   },
@@ -25,8 +18,7 @@ const authSlice = createSlice({
       state.token = null;
       state.user = null;
       state.userId = null;
-      // Effacer le token du localStorage lors de la déconnexion
-      localStorage.removeItem('token');
+
     },
   },
 });

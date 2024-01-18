@@ -34,10 +34,7 @@ const Signin = () => {
         password,
       });
       console.log("Login successful:", response.data);
-      localStorage.setItem('token', response.data.token);
-
       console.log("//////////  token from signin page : ", response.data.token )
-      console.log("//////////  user from signin page :" , response.data )
 
       dispatch(setToken(response.data.token));
       dispatch(setUser(response.data)); 

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import { Box, Button, TextField, InputAdornment, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -14,12 +8,23 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 const Customers = () => {
+
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      navigate('/Signin');
+    }
+  }, [token, navigate]); 
+
   const [searchText, setSearchText] = useState("");
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  // Définition de la fonction handleDeletecustomer avant son utilisation
   const handleDeleteCustomer = async (customerId) => {
     try {
       await axios.delete(`http://localhost:5000/api/users/${customerId}`);
@@ -27,7 +32,6 @@ const Customers = () => {
         position: toast.POSITION.TOP_CENTER,
       });
 
-      // Actualisez la liste des administrateurs après la suppression
       const response = await axios.get("http://localhost:5000/api/users/");
       const customersWithIds = response.data.map((customer, index) => ({
         ...customer,
@@ -59,15 +63,12 @@ const Customers = () => {
         position: toast.POSITION.TOP_CENTER,
       });
 
-      // Actualisez la liste des administrateurs après la mise à jour
       const response = await axios.get("http://localhost:5000/api/users/");
       const customersWithIds = response.data.map((customer, index) => ({
         ...customer,
         id: index + 1,
       }));
       setCustomers(customersWithIds);
-
-      // Réinitialisez l'état selectedAdmin
       setSelectedCustomer(null);
     } catch (error) {
       console.error("Error updating customer:", error.message);
@@ -102,7 +103,6 @@ const Customers = () => {
     { field: "lastName", headerName: "Prénom", width: 80, editable: false },
     { field: "email", headerName: "Email", width: 190, editable: false },
     { field: "phone", headerName: "Numéro tel", width: 100, editable: false },
-
     { field: "role", headerName: "Rôle", width: 150, editable: false },
     { field: "adresse", headerName: "Adresse", width: 180, editable: false },
     { field: "age", headerName: "Age", width: 50, editable: false },

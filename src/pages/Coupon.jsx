@@ -6,8 +6,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Coupon = () => {
+
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      navigate('/Signin');
+    }
+  }, [token, navigate]); 
+
+
+
+
   const [codes, setCodes] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);

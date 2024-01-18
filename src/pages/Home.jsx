@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
 import CustomCard from '../components/Statistics/CustomCard'
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'; 
-//import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import GroupIcon from '@mui/icons-material/Group';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -12,15 +10,15 @@ import { Box } from '@mui/material';
 import Orders from '../components/Statistics/Orders';
 
 const Home = () => {
-  const isAuthenticated = useSelector((state) => !!state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-
- /* useEffect(() => {
-    if (!isAuthenticated) {
+  useEffect(() => {
+    if (!token) {
       navigate('/Signin');
     }
-  }, [isAuthenticated, navigate]);
-*/
+  }, [token, navigate]); 
+
+
   return (
     <div>
       <Box display="flex" flexWrap="wrap">
@@ -56,7 +54,6 @@ const Home = () => {
 
       <Box>
         <Box> <Orders /> </Box>
-        <Box></Box>
       </Box>
     </div>
   );

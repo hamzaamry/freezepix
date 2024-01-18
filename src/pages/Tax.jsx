@@ -1,29 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 const Tax = () => {
+
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      navigate('/Signin');
+    }
+  }, [token, navigate]); 
+  
   const [taxData, setTaxData] = useState([]);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [newTaxData, setNewTaxData] = useState({

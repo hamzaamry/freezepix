@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Typography, IconButton } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 import PersonIcon from "@mui/icons-material/Person";
@@ -7,23 +7,28 @@ import PlaceIcon from "@mui/icons-material/Place";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Table, TableBody, TableCell, TableContainer, TableRow } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 
 const OrderDetails = () => {
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+      navigate('/Signin');
+    }
+  }, [token, navigate]); 
+
   const [status, setStatus] = useState("");
 
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
   };
-
-
     const [livreClicked, setLivreClicked] = useState(false);
     const handleLivreClick = () => {
       setLivreClicked(true);
     };
-
-
-
   return (
     <div>
       <h2>Order Details</h2>
