@@ -19,7 +19,7 @@ import Coupon from '../pages/Coupon';
 import TailleImage from '../pages/TailleImage';
 
 import Tax from '../pages/Tax';
-
+import OrderDetails from '../pages/OrderDetails';
 
 const Routers = () => {
 
@@ -50,6 +50,8 @@ const isAuthenticated = useSelector((state) => !!state.auth.token);
         <Route path="/Coupon" element={<Coupon />} />
 
         <Route path="/TailleImage" element={<TailleImage />} />
+
+        <Route path="/orderDetails" element={<OrderDetails />} />
         
     </Routes>
   )
