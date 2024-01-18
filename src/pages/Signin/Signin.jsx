@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Paper, Typography, TextField, Button, ThemeProvider, createTheme } from "@mui/material";
-import Black from "../Assets/logo/Black.png";
+import Black from "../../Assets/logo/Black.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { setToken , setUser } from "../Store/AuthSlice";
+import { setToken , setUser } from "../../Store/AuthSlice";
 
 const theme = createTheme({
   palette: {

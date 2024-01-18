@@ -1,13 +1,7 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
-
+import React from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
-
 import Home from '../pages/Home';
-import Signin from '../pages/Signin'
-
+import Signin from '../pages/Signin/Signin'
 import Admin from '../pages/Admin/Admin';
 import ProfilAdmin from '../pages/Admin/ProfilAdmin';
 import AddAdmin from '../pages/Admin/AddAdmin';
@@ -22,17 +16,6 @@ import Tax from '../pages/Management/Tax';
 import OrderDetails from '../pages/Management/OrderDetails';
 
 const Routers = () => {
-
-{/*
-const isAuthenticated = useSelector((state) => !!state.auth.token);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/Signin');
-    }
-  }, [isAuthenticated, navigate]);
-*/}
   return (
     <Routes>
         <Route path="/" element={<Navigate to="/home" />} />
