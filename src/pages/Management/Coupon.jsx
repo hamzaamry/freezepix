@@ -19,9 +19,6 @@ const Coupon = () => {
     }
   }, [token, navigate]); 
 
-
-
-
   const [codes, setCodes] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);

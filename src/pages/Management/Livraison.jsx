@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import tn from "../Assets/tn.png";
+import tn from "../../Assets/tn.png";
 import { Typography, CardContent, Card, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, TextField, Grid } from "@mui/material";
 import { styled } from "@mui/system";
 import { useSelector } from 'react-redux';

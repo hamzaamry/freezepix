@@ -12,14 +12,14 @@ import Admin from '../pages/Admin/Admin';
 import ProfilAdmin from '../pages/Admin/ProfilAdmin';
 import AddAdmin from '../pages/Admin/AddAdmin';
 
-import Customers from '../pages/Customers'
-import Livraison from '../pages/Livraison';
+import Customers from '../pages/Management/Customers'
+import Livraison from '../pages/Management/Livraison';
 import MarketingUser from '../pages/MarketingUser';
-import Coupon from '../pages/Coupon';
-import TailleImage from '../pages/TailleImage';
+import Coupon from '../pages/Management/Coupon';
+import TailleImage from '../pages/Management/TailleImage';
 
-import Tax from '../pages/Tax';
-import OrderDetails from '../pages/OrderDetails';
+import Tax from '../pages/Management/Tax';
+import OrderDetails from '../pages/Management/OrderDetails';
 
 const Routers = () => {
 
