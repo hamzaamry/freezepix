@@ -30,19 +30,20 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const SubItem = ({ title, icon, selected, setSelected }) => {
+const SubItem = ({ title, icon, selected, setSelected, to }) => {
   return (
-    <ListItemButton
-      sx={{ pl: 4 }}
-      selected={selected === title}
-      onClick={() => setSelected(title)}
-    >
-      <ListItemIcon>{icon}</ListItemIcon>
-      <ListItemText primary={title} />
-    </ListItemButton>
+    <Link to={to} style={{ textDecoration: "none", color: "inherit" }}>
+      <ListItemButton
+        sx={{ pl: 4 }}
+        selected={selected === title}
+        onClick={() => setSelected(title)}
+      >
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={title} />
+      </ListItemButton>
+    </Link>
   );
 };
-
 const SideBar = () => {
   const [settingsOption, setSettingsOption] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -112,36 +113,42 @@ const SideBar = () => {
                 icon={<PeopleIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                to={"/Admin"}
               />
               <SubItem
                 title="gestion des clients"
                 icon={<ContactsIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                to={"/Customers"}
               />
               <SubItem
                 title="gestion des livraisons"
                 icon={<LocalShippingIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                to={"/Livraison"}
               />
               <SubItem
                 title="gestion des coupons"
                 icon={<DiscountIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                to={"/Coupon"}
               />
               <SubItem
                 title="gestion des taxes"
                 icon={<SearchOffIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                to={"/Tax"}
               />
               <SubItem
                 title="gestion taille d'image"
                 icon={<AspectRatioIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                to={"/TailleImage"}
               />
             </List>
           </Collapse>
