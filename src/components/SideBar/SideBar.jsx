@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, IconButton, Typography, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from "@mui/material";
+import { Box, IconButton, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from "@mui/material";
 import { Sidebar } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
@@ -14,7 +14,7 @@ import ContactsIcon from '@mui/icons-material/Contacts';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-//import admin from "../../Assets/jpg/admin.jpg";
+import FlagIcon from '@mui/icons-material/Flag';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   return (
@@ -149,6 +149,13 @@ const SideBar = () => {
                 selected={selected}
                 setSelected={setSelected}
                 to={"/TailleImage"}
+              />
+                 <SubItem
+                title="gestion des pays"
+                icon={<FlagIcon />}
+                selected={selected}
+                setSelected={setSelected}
+                to={"/Countries"}
               />
             </List>
           </Collapse>

@@ -1,77 +1,100 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Typography,
-  CardContent,
-  Card,
-  styled,
-  Box,
-} from "@mui/material";
+import { Card, styled, Typography, FormControl, Select, MenuItem, InputLabel } from "@mui/material";
 import axios from "axios";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-const StyledCard = styled(Card)({
-  width: 250,
-  height: 200,
-  padding: 10,
-  marginBottom: 10,
-  border: "1px solid #ccc",
-  borderRadius: 8,
-  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-});
+const generatePhotoFrame = (dimensions) => {
+  const [width, height] = dimensions.split("*");
+
+  const PhotoFrame = styled(Card)({
+    width: `${width}rem`,
+    height: `${height}rem`,
+    border: "5px solid #000",
+    position: "relative",
+    overflow: "hidden",
+    cursor: "pointer",
+  });
+
+  const FrameText = styled(Typography)({
+    position: "absolute",
+    bottom: "0.5rem",
+    right: "0.5rem",
+    color: "#000",
+  });
+
+  return (
+    <PhotoFrame>
+      <FrameText variant="body2">{dimensions}</FrameText>
+    </PhotoFrame>
+  );
+};
 
 const TailleImage = () => {
-  const [tailleData, setTailleData] = useState(null);
+  const [dataImage, setDataImage] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(''); 
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/taille/getAllTaille"
-        );
-        setTailleData(response.data);
+        const response = await axios.get('http://localhost:5000/api/taille/getAllTaille');
+        setDataImage(response.data.taille[0].Product);
       } catch (error) {
-        console.error("Error fetching taille data:", error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchData();
-  }, []);
+    if (!token) {
+      navigate('/Signin');
+    } else {
+      fetchData();
+    }
+  }, [token, navigate]);
+
+  const filteredData = selectedCity
+    ? dataImage.filter(item => item.city === selectedCity)
+    : dataImage;
+
+  const handleCityChange = (event) => {
+    setSelectedCity(event.target.value);
+  };
 
   return (
-    <div>
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="space-between"
-        alignItems="center"
-        marginLeft="5rem"
-      >
-        <Grid container spacing={3}>
-          {tailleData &&
-            tailleData.success &&
-            tailleData.taille.map((taille) => (
-              <Grid item key={taille._id} xs={12} sm={4} md={4} lg={4}>
-                {taille.Product.map((product) => (
-                  <Grid item xs={12} key={product._id}>
-                    {product.types.map((type) => (
-                      <StyledCard key={type._id}>
-                        <CardContent>
-                          <Typography variant="h6">
-                            Taille: {type.Taille}
-                          </Typography>
-                          <Typography>
-                            {`City: ${product.city}, Price: ${type.price} ${type.currency}`}
-                          </Typography>
-                        </CardContent>
-                      </StyledCard>
-                    ))}
-                  </Grid>
-                ))}
-              </Grid>
+    <>
+      <h2>
+        Gestion des tailles des Images
+      </h2>
+
+      <FormControl sx={{ width: '10rem' }} >
+        <InputLabel id="city-select-label">Select City</InputLabel>
+        <Select
+        
+          labelId="city-select-label"
+          id="city-select"
+          value={selectedCity}
+          onChange={handleCityChange}
+        >
+          <MenuItem value="">All Cities</MenuItem>
+          <MenuItem value="Canada">Canada</MenuItem>
+          <MenuItem value="Tunisia">Tunisia</MenuItem>
+          <MenuItem value="other">Autre</MenuItem>
+        </Select>
+      </FormControl>
+
+      <div style={{display: 'flex' , padding:'2rem' }}>
+        {filteredData.map((city) => (
+          <div key={city._id} mb={5} >
+            {city.types.map((type) => (
+              <div key={type._id} mb={5} style={{padding:'3rem'}}>
+                {generatePhotoFrame(type.Taille)}
+              </div>
             ))}
-        </Grid>
-      </Box>
-    </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 

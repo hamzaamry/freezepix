@@ -11,9 +11,9 @@ import Livraison from '../pages/Management/Livraison';
 import MarketingUser from '../pages/MarketingUser';
 import Coupon from '../pages/Management/Coupon';
 import TailleImage from '../pages/Management/TailleImage';
-
 import Tax from '../pages/Management/Tax';
 import OrderDetails from '../pages/Management/OrderDetails';
+import Countries from '../pages/Management/Countries';
 
 const Routers = () => {
   return (
@@ -33,8 +33,8 @@ const Routers = () => {
         <Route path="/Coupon" element={<Coupon />} />
 
         <Route path="/TailleImage" element={<TailleImage />} />
-
         <Route path="/orderDetails" element={<OrderDetails />} />
+        <Route path="/Countries" element={<Countries />} />
         
     </Routes>
   )
