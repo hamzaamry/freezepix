@@ -5,32 +5,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import tn from "../../Assets/tn.png";
-import { Typography, CardContent, Card, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, TextField, Grid } from "@mui/material";
-import { styled } from "@mui/system";
+import { Typography, CardContent, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Grid } from "@mui/material";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-const StyledCard = styled(Card)({
-  width: "30%",
-  height: "50%",
-  borderRadius: 12,
-  background: "linear-gradient(to right, #0F2027, #203A43, #2C5364)",
-  boxShadow: "0 8px 10px rgba(0, 0, 0, 0.25)",
-  transition: "transform 0.3s ease-in-out",
-  color: "white",
-  "&:hover": {
-    transform: "scale(1.05)",
-  },
-});
+import { StyledCard, StyledCardContainer, StyledButton, StyledContainer, StyledDiv , SpacedTextField } from "../../shared/StyledComponents"
 
-const StyledCardContainer = styled(Box)({
-  display: "flex",
-  gap: "1%",
-  flexDirection: "row", 
-  flexWrap: "wrap",
-});
 
 const Livraison = () => {
 
@@ -41,8 +22,6 @@ const Livraison = () => {
       navigate('/Signin');
     }
   }, [token, navigate]); 
-
-
 
   const [livraisons, setLivraisons] = useState([]);
   const [editingLivraison, setEditingLivraison] = useState(null);
@@ -177,33 +156,24 @@ const Livraison = () => {
   }, [livraisons]);
 
   return (
-    <Box padding="2rem" display="flex" flexDirection="column" gap={1}>
+    <StyledContainer>
       <div>
-      <Button
- onClick={handleAddClick}
-      variant="contained"
+          <StyledButton
+            onClick={handleAddClick}
+            variant="contained"
             type="submit"
-            style={{
-              transition: "box-shadow 0.3s",
-              backgroundColor: "#000000",
-              color: "#ffffff",
-              width:'20%'
-            }}
-            sx={{ "&:hover": { boxShadow: "0 0 8px 2px #000000" } }}
           >
             Ajouter
-          </Button>
+          </StyledButton>
       </div>
 
 
       <Grid container spacing={0}>
         <StyledCardContainer>
           {livraisons.map((livraison) => (
-            <StyledCard key={livraison._id} style={{ margin: "15px" }}>
+            <StyledCard key={livraison._id}>
               <CardContent>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
+                <StyledDiv>
                   <div>
                     <img src={tn} alt="tn" width="15%" />
                   </div>
@@ -226,7 +196,8 @@ const Livraison = () => {
                       <DeleteIcon />
                     </IconButton>
                   </div>
-                </div>
+                </StyledDiv>
+
                 <Typography marginTop="-1.5rem" variant="h6">
                   Frais de transport: {livraison.fraisTransport}{" "}
                 </Typography>
@@ -249,21 +220,15 @@ const Livraison = () => {
       <Dialog open={editingLivraison !== null} onClose={handleClose}>
         <DialogTitle>Edit Livraison</DialogTitle>
         <DialogContent>
-          <TextField
+          <SpacedTextField
             label="Frais de transport"
-            variant="outlined"
-            fullWidth
             value={editFraisTransport}
             onChange={(e) => setEditFraisTransport(e.target.value)}
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
-          <TextField
+          <SpacedTextField
             label="Currency"
-            variant="outlined"
-            fullWidth
             value={editCurrency}
             onChange={(e) => setEditCurrency(e.target.value)}
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>
@@ -295,21 +260,15 @@ const Livraison = () => {
       <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)}>
         <DialogTitle>Ajouter Livraison</DialogTitle>
         <DialogContent>
-          <TextField
+          <SpacedTextField
             label="Frais de transport"
-            variant="outlined"
-            fullWidth
             value={newFraisTransport}
             onChange={(e) => setNewFraisTransport(e.target.value)}
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
-          <TextField
+          <SpacedTextField
             label="Currency"
-            variant="outlined"
-            fullWidth
             value={newCurrency}
             onChange={(e) => setNewCurrency(e.target.value)}
-            style={{ marginBottom: '1rem' , marginTop: '1rem' }} 
           />
         </DialogContent>
         <DialogActions>
@@ -321,7 +280,7 @@ const Livraison = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </StyledContainer>
   );
 };
 

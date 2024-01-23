@@ -9,24 +9,14 @@ import { Table, TableBody, TableCell, TableContainer, TableRow,  Dialog, DialogC
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
 import  Black  from "../../Assets/logo/Black.png"
-
+import { FactureContainer, StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost } from "../../shared/StyledComponents"
 
 
 const Facture = ({ open, handleClose }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md">
-      <div style={{ 
-        padding: '2rem', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center' ,
-        border: "2px solid #000",
-        width: '25rem',
-        height:'50rem'
-        }}>
-        
+      <FactureContainer>
         <div style={{ marginBottom: '16px' }}>
           <img
             src={Black}
@@ -34,16 +24,9 @@ const Facture = ({ open, handleClose }) => {
             style={{ width: '150px', height: 'auto' }}
           />
         </div>
-
-        <Typography
-                  fontFamily="DM sans"
-            fontSize="20px"
-            fontWeight="700"
-            lineHeight="50px"
-            marginBottom="1.5rem"
-          >
+          <OrderTypography >
             Facture
-          </Typography>
+          </OrderTypography>
 
         <DialogContent>
       
@@ -68,13 +51,10 @@ const Facture = ({ open, handleClose }) => {
             Close
           </Button>
         </DialogActions>
-      </div>
+      </FactureContainer>
     </Dialog>
   );
 };
-
-
-
 
 const OrderDetails = () => {
   const token = useSelector((state) => state.auth.token);
@@ -105,208 +85,104 @@ const OrderDetails = () => {
     };
   return (
     <div>
-      <h2>Order Details</h2>
+      <Title>Order Details</Title>
       <div style={{ marginBottom: '2rem' }}>
-        <Button
+        <StyledButton
           variant="contained"
-          style={{
-            backgroundColor: 'black', 
-            color: 'white', 
-            textDecoration: 'none', 
-            padding: '10px 20px', 
-            borderRadius: '1px',
-            cursor: 'pointer',
-          }}
           component={Link} 
           to="/Home"
         >
           Retour
-        </Button>
+        </StyledButton>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          boxShadow: "0 0px 0px rgba(0, 0, 0, 0.1)",
-          borderRadius: "8px",
-          padding: "16px",
-          backgroundColor: "black",
-          color: "white",
-        }}
-      >
+      <OrderContainer>
         <div style={{ display: 'flex' }} >
         <CalendarTodayIcon />
-        <Typography
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "sans-serif",
-                  fontWeight: "500",
-                    marginLeft: '1rem'
-                }}
-              >
-               Dec 12 2021 
-              </Typography>
+        <StyledDate>
+            Dec 12 2021 
+        </StyledDate>
         </div>
          
         <div>
-          <select
+          <StyledSelect
             id="status"
             name="status"
             value={status}
             onChange={handleStatusChange}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              fontSize: "14px",
-              marginLeft: "8px",
-              backgroundColor: "white",
-              color: "black",
-            }}
           >
             <option value="choose Status">choose Status</option>
             <option value="Awaiting Payment">Awaiting Payment</option>
             <option value="Delivered">Delivered</option>
             <option value="Shipped">Shipped</option>
             <option value="Confirmed">Confirmed</option>
-          </select>
+          </StyledSelect>
           <IconButton style={{ color: "white" }} onClick={handleFactureOpen} >
             <PrintIcon />
           </IconButton>
         </div>
-      </div>
+      </OrderContainer>
 
-      <div
-        style={{
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          borderRadius: "8px",
-          padding: "16px",
-          backgroundColor: "#dce0e5",
-          
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            padding: '4rem',
-            marginBottom: '2rem'
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
+      <OrderTableContainer >
+        <OrderElements>
+          <OrderElement>
             <div>
                 <IconButton style={{ backgroundColor: "#000" }}>
                     <PersonIcon style={{ fontSize: "35px", color: "#fff" }} />
                 </IconButton>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginLeft: '2rem'
-              }}
-            >
-              <Typography
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "sans-serif",
-                  fontWeight: "700",
-           
-                }}
-              >
+            <StyledElement>
+              <OrderTypography>
                 Client
-              </Typography>
+              </OrderTypography>
               <Typography>userName</Typography>
               <Typography>user@example.com</Typography>
-            </div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
+            </StyledElement>
+          </OrderElement>
+          <OrderElement>
             <div>
               <IconButton style={{ backgroundColor: "#000" }} >
                 <LocalShippingIcon style={{ fontSize: "35px", color: "#fff" }} />
               </IconButton>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginLeft: '2rem'
-              }}
-            >
-              <Typography
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "sans-serif",
-                  fontWeight: "700",
-            
-                }}
-              >
+            <StyledElement>
+              <OrderTypography>
                 Order Info
-              </Typography>
+              </OrderTypography>
               <Typography>shipping : CountryName</Typography>
-            </div>
-          </div>
+            </StyledElement>
+          </OrderElement>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              
-            }}
-          >
+          <OrderElement>
             <div>
               <IconButton style={{ backgroundColor: "#000" }} >
                 <PlaceIcon style={{ fontSize: "35px", color: "#fff" }} />
               </IconButton>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginLeft: '2rem'
-              }}
-            >
-              <Typography
-                style={{
-                  fontSize: "20px",
-                  fontFamily: "sans-serif",
-                  fontWeight: "700",
-                }}
-              >
+            <StyledElement>
+              <OrderTypography>
                 Deliver To
-              </Typography>
+              </OrderTypography>
               <Typography>Address: Arusha</Typography>
               <Typography>P.O Box Arusha Tz 1234</Typography>
-            </div>
-          </div>
-        </div>
+            </StyledElement>
+          </OrderElement>
+        </OrderElements>
 
-        <div style={{ display: 'flex', marginTop: '2rem' }}>
+        <OrderTable>
 
         <TableContainer>
           <Table>
             <TableBody>
-
-            <TableRow style={{ borderBottom: '2px solid black' }}>
-                <TableCell style={{fontSize: "18px" , fontWeight:'bold'}}>Produit</TableCell>
-                <TableCell style={{fontSize: "18px" , fontWeight:'bold'}} >Prix unitaire</TableCell>
-                <TableCell style={{fontSize: "18px" , fontWeight:'bold'}} >Quantité</TableCell>
-                <TableCell style={{fontSize: "18px" , fontWeight:'bold'}} >Total</TableCell>
-              </TableRow>
+              <StyledTableRow>
+                <StyledTableCell>Produit</StyledTableCell>
+                <StyledTableCell>Prix unitaire</StyledTableCell>
+                <StyledTableCell>Quantité</StyledTableCell>
+                <StyledTableCell>Total</StyledTableCell>
+              </StyledTableRow>
 
               <TableRow >
                 <TableCell>test1</TableCell>
@@ -314,7 +190,6 @@ const OrderDetails = () => {
                 <TableCell>4</TableCell>
                 <TableCell>28,00 €</TableCell>
               </TableRow>
-
 
               <TableRow >
                 <TableCell>test2</TableCell>
@@ -330,15 +205,14 @@ const OrderDetails = () => {
                 <TableCell>100,00 €</TableCell>
               </TableRow>
 
-
             </TableBody>
           </Table>
-          <div style={{marginTop: '1rem', padding:'1rem' }} >
+          <TotalCost>
                     <Typography>Subtotal: 203.00 €</Typography> 
                     <Typography>Shipping cost: 10.00 €</Typography>
                     <Typography>Grand total: 213.00 € </Typography>
                     <Typography>Status: payment Done </Typography>
-                </div>
+          </TotalCost>
         </TableContainer>
                
 
@@ -352,15 +226,12 @@ const OrderDetails = () => {
             onClick={handleLivreClick}
           >
             {livreClicked ? "Livré" : "Marquer comme livré"} 
-            
           </Button>
         </div>
-      </div>
-    </div>
+      </OrderTable>
+    </OrderTableContainer>
     <Facture open={factureOpen} handleClose={handleFactureClose} />
-
       </div>
-
   );
 };
 

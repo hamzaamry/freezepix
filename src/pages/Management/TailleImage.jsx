@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  styled,
-  Typography,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
-  Button,
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
+import { Card, styled, Typography, FormControl, Select, MenuItem, InputLabel, Button, Box, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 //import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { StyledDiv, StyledButton, FrameContainer , FrameText , Frames} from "../../shared/StyledComponents"
+
 
 
 const generatePhotoFrame = (dimensions, onDelete) => {
@@ -32,14 +20,6 @@ const generatePhotoFrame = (dimensions, onDelete) => {
     overflow: "hidden",
     cursor: "pointer",
   });
-
-  const FrameText = styled(Typography)({
-    position: "absolute",
-    bottom: "0.5rem",
-    right: "0.5rem",
-    color: "#000",
-  });
-
   return (
     <PhotoFrame onClick={onDelete}>
       <FrameText variant="body2">{dimensions}</FrameText>
@@ -120,28 +100,16 @@ const TailleImage = () => {
 
   return (
     <>
-      <Box
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      <StyledDiv>
         <h2>Gestion des tailles des Images</h2>
-
-        <Button
+        <StyledButton
           variant="contained"
           //onClick={handleAddAdminClick}
           type="submit"
-          style={{
-            transition: "box-shadow 0.3s",
-            backgroundColor: "#000000",
-            color: "#ffffff",
-          }}
-          sx={{ "&:hover": { boxShadow: "0 0 8px 2px #000000" } }}
         >
           Ajouter
-        </Button>
-      </Box>
+        </StyledButton>
+      </StyledDiv>
       <FormControl sx={{ width: "10rem" }}>
         <InputLabel id="city-select-label">Select City</InputLabel>
         <Select
@@ -157,17 +125,17 @@ const TailleImage = () => {
         </Select>
       </FormControl>
 
-      <div style={{ display: "flex", padding: "2rem" }}>
+      <FrameContainer>
         {filteredData.map((city) => (
           <div key={city._id} mb={5}>
             {city.types.map((type) => (
-              <div key={type._id} mb={5} style={{ padding: "3rem" }}>
+              <Frames key={type._id} >
                 {generatePhotoFrame(type.Taille, () => handleDeleteClick(type._id))}
-              </div>
+              </Frames>
             ))}
           </div>
         ))}
-      </div>
+      </FrameContainer>
 
       {/* Delete Confirmation Dialog */}
       <Dialog

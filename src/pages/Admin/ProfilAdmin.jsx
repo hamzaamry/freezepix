@@ -1,16 +1,16 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
-
+import { Box } from "@mui/material";
 import ProfilCard from "../../components/Profile/ProfilCard";
 import UploadPic from "../../components/Profile/UploadPic";
+import { Container } from "../../shared/StyledComponents"
 
 const ProfilAdmin = () => {
   return (
     <Box  >
-      <Box display="flex" justifyContent='space-between' >
+      <Container>
         <UploadPic />
         <ProfilCard />
-      </Box>
+      </Container>
      
     </Box>
   );

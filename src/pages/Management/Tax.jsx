@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Container, StyledButton, ButtonContainer } from "../../shared/StyledComponents"
+
 
 const Tax = () => {
 
@@ -114,29 +115,18 @@ const Tax = () => {
 
   return (
     <div>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Container>
         <h2>Gestion des taxes</h2>
-        <Box
-          style={{
-            display: 'flex',
-            height: '3rem',
-          }}
+        <ButtonContainer
         >
-          {/* Ajouter un gestionnaire d'événements onClick pour ouvrir la boîte de dialogue */}
-          <Button
+          <StyledButton
             variant="contained"
             onClick={handleAddClick}
-            style={{
-              transition: 'box-shadow 0.3s',
-              backgroundColor: '#000000',
-              color: '#ffffff',
-            }}
-            sx={{ '&:hover': { boxShadow: '0 0 8px 2px #000000' } }}
           >
             Ajouter
-          </Button>
-        </Box>
-      </Box>
+          </StyledButton>
+        </ButtonContainer>
+      </Container>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>

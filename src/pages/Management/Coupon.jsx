@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Box, TextField,
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography, TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
+import { Container, ButtonContainer, StyledButton } from '../../shared/StyledComponents';
 
 const Coupon = () => {
 
@@ -130,29 +132,18 @@ const Coupon = () => {
 
   return (
     <div>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Container>
         <h2>Gestion des coupons</h2>
-        <Box
-          style={{
-            display: "flex",
-            height: "3rem",
-          }}
-        >
-          <Button
+        <ButtonContainer>
+          <StyledButton
             variant="contained"
             type="submit"
             onClick={() => setAddDialogOpen(true)}
-            style={{
-              transition: "box-shadow 0.3s",
-              backgroundColor: "#000000",
-              color: "#ffffff",
-            }}
-            sx={{ "&:hover": { boxShadow: "0 0 8px 2px #000000" } }}
           >
             Ajouter
-          </Button>
-        </Box>
-      </Box>
+          </StyledButton>
+        </ButtonContainer>
+      </Container>
 
       <TableContainer component={Paper}>
         <Table>

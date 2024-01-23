@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
+import { InputAdornment, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -14,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { Container , ButtonContainer , StyledButton, StyledSearchTextField, StyledTextField, DataGridContainer } from "../../shared/StyledComponents";
 
 const Admin = () => {
   const [searchText, setSearchText] = useState("");
@@ -61,7 +57,6 @@ const Admin = () => {
         position: toast.POSITION.TOP_CENTER,
       });
 
-      // Actualisez la liste des administrateurs après la mise à jour
       const response = await axios.get(
         "http://localhost:5000/api/admin/getAll"
       );
@@ -163,33 +158,21 @@ const Admin = () => {
 
   return (
     <div>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Container>
         <h2>Admin Panel</h2>
-        <Box
-          style={{
-            display: "flex",
-            height: "3rem",
-          }}
-        >
-          <Button
+        <ButtonContainer >
+          <StyledButton
             variant="contained"
             onClick={handleAddAdminClick}
             type="submit"
-            style={{
-              transition: "box-shadow 0.3s",
-              backgroundColor: "#000000",
-              color: "#ffffff",
-            }}
-            sx={{ "&:hover": { boxShadow: "0 0 8px 2px #000000" } }}
-          >
+            >
             Ajouter un Admin
-          </Button>
-        </Box>
-      </Box>
-      <TextField
+          </StyledButton>
+        </ButtonContainer>
+      </Container>
+      <StyledSearchTextField
         placeholder="Rechercher"
         variant="outlined"
-        sx={{ ml: 10, mb: 3, flex: 1, fontSize: "15px" }}
         value={searchText}
         onChange={handleSearch}
         InputProps={{
@@ -204,54 +187,37 @@ const Admin = () => {
       />
       {selectedAdmin && (
         <div>
-          <TextField
+          <StyledTextField
             label="Nouveau nom"
             value={selectedAdmin.name}
             onChange={(e) =>
               setSelectedAdmin({ ...selectedAdmin, name: e.target.value })
             }
-            style={{
-              margin:'1rem'
-            }}
           />
-          <TextField
+          <StyledTextField
             label="Nouveau email"
             value={selectedAdmin.email}
             onChange={(e) =>
               setSelectedAdmin({ ...selectedAdmin, email: e.target.value })
             }
-            style={{
-              margin:'1rem'
-            }}
           />
-
-          <TextField
+          <StyledTextField
             label="Nouveau numero"
             value={selectedAdmin.phone}
             onChange={(e) =>
               setSelectedAdmin({ ...selectedAdmin, phone: e.target.value })
             }
-            style={{
-              margin:'1rem'
-            }}
           />
-
-          <Button    style={{
-              margin:'1rem'
-            }} onClick={handleUpdateAdmin}>Enregistrer</Button>
+            <StyledButton 
+              onClick={handleUpdateAdmin}
+              variant="contained"
+            >
+              Enregistrer
+            </StyledButton>
         </div>
       )}
 
-      <Box
-        display="flex"
-        sx={{
-          height: 500,
-          width: "90%",
-          margin: "auto",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-        }}
-      >
+      <DataGridContainer >
         <DataGrid
           rows={filteredAdmins}
           columns={columns}
@@ -259,7 +225,7 @@ const Admin = () => {
           checkboxSelection
           disableRowSelectionOnClick
         />
-      </Box>
+      </DataGridContainer>
     </div>
   );
 };

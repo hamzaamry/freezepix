@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, TextField, InputAdornment, IconButton } from "@mui/material";
+import {Button, InputAdornment, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,12 +7,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
+import { Container, StyledSearchTextField, DataGridContainer , StyledTextField } from "../../shared/StyledComponents"
 const Customers = () => {
-
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
   useEffect(() => {
@@ -161,13 +159,12 @@ const Customers = () => {
 
   return (
     <div>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Container>
         <h2>Gestion des clients</h2>
-      </Box>
-      <TextField
+      </Container>
+      <StyledSearchTextField
         placeholder="Rechercher"
         variant="outlined"
-        sx={{ ml: 10, mb: 3, flex: 1, fontSize: "15px" }}
         value={searchText}
         onChange={handleSearch}
         InputProps={{
@@ -183,17 +180,14 @@ const Customers = () => {
 
 {selectedCustomer && (
   <div>
-    <TextField
+    <StyledTextField
       label="Nouveau nom"
       value={selectedCustomer.name}
       onChange={(e) =>
         setSelectedCustomer({ ...selectedCustomer, name: e.target.value })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
-    <TextField
+    <StyledTextField
       label="Nouveau prénom"
       value={selectedCustomer.lastName}
       onChange={(e) =>
@@ -202,11 +196,8 @@ const Customers = () => {
           lastName: e.target.value,
         })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
-    <TextField
+    <StyledTextField
       label="Nouveau email"
       value={selectedCustomer.email}
       onChange={(e) =>
@@ -215,11 +206,8 @@ const Customers = () => {
           email: e.target.value,
         })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
-    <TextField
+    <StyledTextField
       label="Nouveau téléphone"
       value={selectedCustomer.phone}
       onChange={(e) =>
@@ -228,11 +216,8 @@ const Customers = () => {
           phone: e.target.value,
         })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
-    <TextField
+    <StyledTextField
       label="Nouveau rôle"
       value={selectedCustomer.role}
       onChange={(e) =>
@@ -241,11 +226,8 @@ const Customers = () => {
           role: e.target.value,
         })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
-    <TextField
+    <StyledTextField
       label="Nouvelle adresse"
       value={selectedCustomer.adresse}
       onChange={(e) =>
@@ -254,11 +236,8 @@ const Customers = () => {
           adresse: e.target.value,
         })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
-    <TextField
+    <StyledTextField
       label="Nouvel âge"
       value={selectedCustomer.age}
       onChange={(e) =>
@@ -267,9 +246,6 @@ const Customers = () => {
           age: e.target.value,
         })
       }
-      style={{
-        margin: "1rem",
-      }}
     />
     <Button
       style={{
@@ -289,18 +265,7 @@ const Customers = () => {
     </Button>
   </div>
 )}
-
-
-      <Box
-        display="flex"
-        sx={{
-          height: 500,
-          width: "90%",
-          margin: "auto",
-          backgroundColor: "rgba(255, 255, 255, 0.8)",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-        }}
-      >
+      <DataGridContainer>
         <DataGrid
           rows={filteredCustomers}
           columns={columns}
@@ -308,7 +273,7 @@ const Customers = () => {
           checkboxSelection
           disableRowSelectionOnClick
         />
-      </Box>
+      </DataGridContainer>
     </div>
   );
 };
