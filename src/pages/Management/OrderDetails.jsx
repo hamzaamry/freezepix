@@ -5,56 +5,42 @@ import PersonIcon from "@mui/icons-material/Person";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PlaceIcon from "@mui/icons-material/Place";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import { Table, TableBody, TableCell, TableContainer, TableRow,  Dialog, DialogContent, DialogActions } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import  Black  from "../../Assets/logo/Black.png"
-import { FactureContainer, StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost } from "../../shared/StyledComponents"
+import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost } from "../../shared/StyledComponents"
+import jsPDF from 'jspdf';
 
+  const handleOpenPDF = () => {
+    const pdf = new jsPDF();
+    pdf.addImage(Black, 'PNG', pdf.internal.pageSize.width - 50, 10, 20, 20);
 
-const Facture = ({ open, handleClose }) => {
-  return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md">
-      <FactureContainer>
-        <div style={{ marginBottom: '16px' }}>
-          <img
-            src={Black}
-            alt="Logo"
-            style={{ width: '150px', height: 'auto' }}
-          />
-        </div>
-          <OrderTypography >
-            Facture
-          </OrderTypography>
+   pdf.setFontSize(16);
+   const factureText = "Facture";
+   const factureTextWidth = pdf.getStringUnitWidth(factureText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+   const centerX = (pdf.internal.pageSize.width - factureTextWidth) / 2;
+   pdf.text(factureText, centerX, 30);
 
-        <DialogContent>
-      
-            <p>Date: 05 December 2023</p>
-            <p> Nom: Amri Hamza </p>
-            <p>Telephone: +216 92 221 937 </p>
-            <hr />
-            <p> Address1: karatchi street, Bardo, Tunis </p>
-            <p> Address2: Manouba </p>
-            <p> Code Postale: 5000 </p>
-            <hr />
-            <p>Prix unitaire: 26.00 DT</p>
-            <p>Quantité: x3</p>
-            <p>Frais de livraison: 7.00 DT</p>
-            <p>Taxes: 1.36 DT</p>
-             <h4>Totale : <span color="green"> 30.00 DT </span></h4>
-        </DialogContent>
+    pdf.setFontSize(12);
+    pdf.text('Date: 05 December 2023', 10, 60);
+    pdf.text('Nom: Amri Hamza', 10, 75);
+    pdf.text('Telephone: +216 92 221 937', 10, 90);
+    pdf.text('Address1: karatchi street, Bardo, Tunis', 10, 110);
+    pdf.text('Address2: Manouba', 10, 125);
+    pdf.text('Code Postale: 5000', 10, 140);
+    pdf.text('Prix unitaire: 26.00 DT', 10, 160);
+    pdf.text('Quantité: x3', 10, 175);
+    pdf.text('Frais de livraison: 7.00 DT', 10, 190);
+    pdf.text('Taxes: 1.36 DT', 10, 205);
+    pdf.text('Totale : 30.00 DT', 10, 220);
 
-     
-        <DialogActions>
-          <Button onClick={handleClose} variant="contained" color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </FactureContainer>
-    </Dialog>
-  );
-};
+    const blob = pdf.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url);
+  };
+
 
 const OrderDetails = () => {
   const token = useSelector((state) => state.auth.token);
@@ -66,15 +52,6 @@ const OrderDetails = () => {
   }, [token, navigate]); 
 
   const [status, setStatus] = useState("");
-  const [factureOpen, setFactureOpen] = useState(false);
-
-  const handleFactureClose = () => {
-    setFactureOpen(false);
-  };
-
-  const handleFactureOpen = () => {
-    setFactureOpen(true);
-  }
 
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
@@ -117,7 +94,7 @@ const OrderDetails = () => {
             <option value="Shipped">Shipped</option>
             <option value="Confirmed">Confirmed</option>
           </StyledSelect>
-          <IconButton style={{ color: "white" }} onClick={handleFactureOpen} >
+          <IconButton style={{ color: "white" }} onClick={handleOpenPDF} >
             <PrintIcon />
           </IconButton>
         </div>
@@ -230,7 +207,6 @@ const OrderDetails = () => {
         </div>
       </OrderTable>
     </OrderTableContainer>
-    <Facture open={factureOpen} handleClose={handleFactureClose} />
       </div>
   );
 };
