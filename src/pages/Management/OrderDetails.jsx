@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography, IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -14,34 +14,6 @@ import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTab
 import jsPDF from 'jspdf';
 import axios from "axios";
 
-  const handleOpenPDF = () => {
-    const pdf = new jsPDF();
-    pdf.addImage(Black, 'PNG', pdf.internal.pageSize.width - 50, 10, 20, 20);
-
-   pdf.setFontSize(16);
-   const factureText = "Facture";
-   const factureTextWidth = pdf.getStringUnitWidth(factureText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
-   const centerX = (pdf.internal.pageSize.width - factureTextWidth) / 2;
-   pdf.text(factureText, centerX, 30);
-
-    pdf.setFontSize(12);
-    pdf.text('Date: 05 December 2023', 10, 60);
-    pdf.text('Nom: Amri Hamza', 10, 75);
-    pdf.text('Telephone: +216 92 221 937', 10, 90);
-    pdf.text('Address1: karatchi street, Bardo, Tunis', 10, 110);
-    pdf.text('Address2: Manouba', 10, 125);
-    pdf.text('Code Postale: 5000', 10, 140);
-    pdf.text('Prix unitaire: 26.00 DT', 10, 160);
-    pdf.text('Quantité: x3', 10, 175);
-    pdf.text('Frais de livraison: 7.00 DT', 10, 190);
-    pdf.text('Taxes: 1.36 DT', 10, 205);
-    pdf.text('Totale : 30.00 DT', 10, 220);
-
-    const blob = pdf.output('blob');
-    const url = URL.createObjectURL(blob);
-    window.open(url);
-  };
-
 
 const OrderDetails = () => {
   const token = useSelector((state) => state.auth.token);
@@ -49,10 +21,8 @@ const OrderDetails = () => {
 
   const [CreationDate , setCreationDate ] = useState("")
   const [userDetails , setUserDetails ] = useState([])
-  //const [formattedDate, setFormattedDate] = useState("")
   const [PanierData , setPanierData ] = useState([])
   const [orderData , setOrderData ] = useState([])
-
   const [currency , setCurrency] = useState("")
 
  
@@ -67,7 +37,6 @@ const OrderDetails = () => {
       setOrderData(response.data.panier.Orders)
       setCurrency(response.data.panier.Orders[0].currency)
 
-
     } catch(error) {
       console.error('Error fetching data:', error);
     }
@@ -79,10 +48,41 @@ const OrderDetails = () => {
   }
 }, [token, navigate]);
 
+const handleOpenPDF = () => {
+  const pdf = new jsPDF();
+  pdf.addImage(Black, 'PNG', pdf.internal.pageSize.width - 50, 10, 20, 20);
+
+  pdf.setFontSize(16);
+  const factureText = "Facture";
+  const factureTextWidth = pdf.getStringUnitWidth(factureText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
+  const centerX = (pdf.internal.pageSize.width - factureTextWidth) / 2;
+  pdf.text(factureText, centerX, 30);
+
+  pdf.setFontSize(12);
+
+  pdf.text(`Date: ${CreationDate}`, 10, 40);
+  pdf.text(`Nom: ${userDetails.name}`, 10, 55);
+  pdf.text(`Téléphone: ${userDetails.phone}`, 10, 70);
+  pdf.text(`Email: ${userDetails.email}`, 10, 85);
+  pdf.text(`Adresse: ${userDetails.adresse}`, 10, 100);
+
+
+  pdf.text("Produits Achetés:", 10, 120);
+
+  PanierData.Orders && PanierData.Orders.forEach((order, index) => {
+    const yPosition = 140 + index * 60; 
+    pdf.text(`Produit ${index + 1}:`, 10, yPosition);
+    pdf.text(`   N° Commande: ${order.NumCommande}`, 20, yPosition + 10);
+    pdf.text(`   Taille: ${order.taille} ${order.currency}`, 20, yPosition + 20);
+    pdf.text(`   Prix: ${order.prixFinalSansTax} ${order.currency}`, 20, yPosition + 30);
+  });
+
+  const blob = pdf.output('blob');
+  const url = URL.createObjectURL(blob);
+  window.open(url);
+};
+
   const [status, setStatus] = useState("");
-
-
-
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
   };
@@ -91,8 +91,6 @@ const OrderDetails = () => {
     const handleLivreClick = () => {
       setLivreClicked(true);
     };
-
-
 
   return (
     <div>
@@ -118,21 +116,23 @@ const OrderDetails = () => {
         </StyledDate>
         </div>
          
-
-
         <div>
-          <StyledSelect
-            id="status"
-            name="status"
-            value={status}
-            onChange={handleStatusChange}
-          >
-            <option value="choose Status">choose Status</option>
-            <option value="Awaiting Payment">Awaiting Payment</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Confirmed">Confirmed</option>
-          </StyledSelect>
+        <StyledSelect
+          id="status"
+          name="status"
+          value={status}
+          onChange={handleStatusChange}
+        >
+          <option value="choose Status">Choisir le statut</option>
+          <option value="Awaiting Confirmation">En attente de confirmation</option>
+          <option value="Available for Printing">Disponible pour l'impression</option>
+          <option value="Available for Shipping">Disponible pour l'expédition</option>
+          <option value="In Delivery">En cours de livraison</option>
+          <option value="Delivered">Commande livrée</option>
+          <option value="Order Refused">Commande refusée</option>
+          <option value="Order Paid">Commande payée</option>
+        </StyledSelect>
+
           <IconButton style={{ color: "white" }} onClick={handleOpenPDF} >
             <PrintIcon />
           </IconButton>
@@ -205,43 +205,32 @@ const OrderDetails = () => {
           <Table>
             <TableBody>
               <StyledTableRow>
-                <StyledTableCell>Produit</StyledTableCell>
-                <StyledTableCell>Prix unitaire</StyledTableCell>
+                <StyledTableCell>N° Commande</StyledTableCell>
                 <StyledTableCell>Quantité</StyledTableCell>
-                <StyledTableCell>Total</StyledTableCell>
+                <StyledTableCell>Taille</StyledTableCell>
+                <StyledTableCell>Prix Sans Tax</StyledTableCell>
               </StyledTableRow>
 
-              <TableRow >
-                <TableCell>test1</TableCell>
-                <TableCell>7,00 €</TableCell>
-                <TableCell>4</TableCell>
-                <TableCell>28,00 €</TableCell>
-              </TableRow>
-
-              <TableRow >
-                <TableCell>test2</TableCell>
-                <TableCell>25,00 €</TableCell>
-                <TableCell>3</TableCell>
-                <TableCell>75,00 €</TableCell>
-              </TableRow>
-
-              <TableRow >
-                <TableCell>test3</TableCell>
-                <TableCell>100,00 €</TableCell>
-                <TableCell>1</TableCell>
-                <TableCell>100,00 €</TableCell>
-              </TableRow>
+              {PanierData.Orders && PanierData.Orders.map((order) => (
+                <TableRow key={order.idOrder}>
+                  <TableCell> <StyledText> {order.NumCommande} </StyledText> </TableCell>
+                  <TableCell>  <StyledText> {order.qunaitity} </StyledText> </TableCell>
+                  <TableCell>  <StyledText>  {order.taille} </StyledText></TableCell>
+                  <TableCell> <StyledText> {order.prixFinalSansTax} {order.currency} </StyledText> </TableCell>
+                </TableRow>
+              ))}
 
             </TableBody>
           </Table>
-          <TotalCost>
-                    <Typography>Subtotal: 203.00 €</Typography> 
-                    <Typography>Shipping cost: 10.00 €</Typography>
-                    <Typography>Grand total: 213.00 € </Typography>
-                    <Typography>Status: payment Done </Typography>
-          </TotalCost>
-        </TableContainer>
-               
+          {PanierData.Orders && PanierData.Orders.length > 0 && (
+            <TotalCost>
+              <StyledText>Sous-total : {PanierData.prixOfOllOderByUser} {PanierData.Orders[0].currency}</StyledText> 
+              <StyledText>Frais de livraison : {PanierData.fraisTansport} {PanierData.Orders[0].currency}</StyledText>
+              <StyledText>Total général : {PanierData.prixOfOllOderByUser + PanierData.fraisTansport} {PanierData.Orders[0].currency}</StyledText>
+              <StyledText>Statut : {PanierData.isPaid ? "Paiement effectué" : "Paiement en attente"}</StyledText>
+            </TotalCost>
+          )}
+        </TableContainer>             
 
         <div style={{ marginLeft: '2rem' }}>
           <Button
