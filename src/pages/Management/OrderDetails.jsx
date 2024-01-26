@@ -13,7 +13,7 @@ import  Black  from "../../Assets/logo/Black.png"
 import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost , StyledText } from "../../shared/StyledComponents"
 import jsPDF from 'jspdf';
 import axios from "axios";
-
+import { useParams } from 'react-router-dom';
 
 const OrderDetails = () => {
   const token = useSelector((state) => state.auth.token);
@@ -25,12 +25,12 @@ const OrderDetails = () => {
   const [orderData , setOrderData ] = useState([])
   const [currency , setCurrency] = useState("")
 
- 
+  const { orderId } = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
     try{
-      const response = await axios.get("http://localhost:5000/api/order/getPanierById/65ac0e270c0846c4df78cf93")
-
+      const response = await axios.get(`http://localhost:5000/api/order/getPanierById/${orderId}`)
       setPanierData(response.data.panier)
       setUserDetails(response.data.panier.userId)
       setCreationDate(response.data.panier.createdAt)
@@ -65,8 +65,6 @@ const handleOpenPDF = () => {
   pdf.text(`Téléphone: ${userDetails.phone}`, 10, 70);
   pdf.text(`Email: ${userDetails.email}`, 10, 85);
   pdf.text(`Adresse: ${userDetails.adresse}`, 10, 100);
-
-
   pdf.text("Produits Achetés:", 10, 120);
 
   PanierData.Orders && PanierData.Orders.forEach((order, index) => {

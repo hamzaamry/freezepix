@@ -5,7 +5,6 @@ import Signin from '../pages/Signin/Signin'
 import Admin from '../pages/Admin/Admin';
 import ProfilAdmin from '../pages/Admin/ProfilAdmin';
 import AddAdmin from '../pages/Admin/AddAdmin';
-
 import Customers from '../pages/Management/Customers'
 import Livraison from '../pages/Management/Livraison';
 import MarketingUser from '../pages/MarketingUser';
@@ -33,7 +32,7 @@ const Routers = () => {
         <Route path="/Coupon" element={<Coupon />} />
 
         <Route path="/TailleImage" element={<TailleImage />} />
-        <Route path="/orderDetails" element={<OrderDetails />} />
+        <Route path="/orderDetails/:orderId" element={<OrderDetails />} />
         <Route path="/Countries" element={<Countries />} />
         
     </Routes>

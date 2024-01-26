@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -12,19 +11,23 @@ const Orders = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-    try{
-      const response = await axios.get("http://localhost:5000/api/order/GetAllDataPanier")
-      setOrders(response.data);
-    } catch(error) {
-      console.error('Error fetching data:', error);
+      try {
+        const response = await axios.get("http://localhost:5000/api/order/GetAllDataPanier")
+        setOrders(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     }
-  }
-  if (!token) {
-    navigate('/Signin');
-  } else {
-    fetchData();
-  }
-}, [token, navigate]);
+    if (!token) {
+      navigate('/Signin');
+    } else {
+      fetchData();
+    }
+  }, [token, navigate]);
+
+  const handleOrderClick = (orderId) => {
+    navigate(`/orderDetails/${orderId}`);
+  };
 
   return (
     <div
@@ -35,58 +38,44 @@ const Orders = () => {
       }}
     >
       <div className="card-header">
-        <Title>
-        Dernières commandes
-        </Title>
+        <Title>Dernières commandes</Title>
       </div>
-      
-      {orders.map(order => (
-        <Link to="/orderDetails" key={order._id} style={{ textDecoration: "none" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "2rem",
-              transition: "background-color 0.3s",
-              cursor: "pointer",
-              alignItems: "center", 
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = "#f0f0f0";
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = "initial";
-            }}
-          >
-            <div>
-              <StyledText>
-                {order.userId.name}
-              </StyledText>
-            </div>
-            <div>
-              <StyledText>
-                {order.userId.email}
-              </StyledText>
-            </div>
-            
-            <div>
-              <StyledText>
-                {order.createdAt}
-              </StyledText>
-            </div>
-            <div>
-              <StyledText>
-                ${order.prixOfOllOderByUser || 0}
-              </StyledText>
-            </div>
-            <div>
-              <StyledText>
-                {order.isPaid ? "payé" : "non payé"}
-              </StyledText>
-            </div>
 
+      {orders.map(order => (
+        <div
+          key={order._id}
+          onClick={() => handleOrderClick(order._id)}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "2rem",
+            transition: "background-color 0.3s",
+            cursor: "pointer",
+            alignItems: "center",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = "#f0f0f0";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = "initial";
+          }}
+        >
+          <div>
+            <StyledText>{order.userId.name}</StyledText>
           </div>
-        </Link>
+          <div>
+            <StyledText>{order.userId.email}</StyledText>
+          </div>
+          <div>
+            <StyledText>{order.createdAt}</StyledText>
+          </div>
+          <div>
+            <StyledText>${order.prixOfOllOderByUser || 0}</StyledText>
+          </div>
+          <div>
+            <StyledText>{order.isPaid ? "payé" : "non payé"}</StyledText>
+          </div>
+        </div>
       ))}
     </div>
   );
