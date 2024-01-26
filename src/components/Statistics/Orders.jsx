@@ -1,8 +1,31 @@
-import React from "react";
-import Typography from "@mui/material/Typography";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Title, StyledText } from "../../shared/StyledComponents";
 
 const Orders = () => {
+  const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+    try{
+      const response = await axios.get("http://localhost:5000/api/order/GetAllDataPanier")
+      setOrders(response.data);
+    } catch(error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+  if (!token) {
+    navigate('/Signin');
+  } else {
+    fetchData();
+  }
+}, [token, navigate]);
+
   return (
     <div
       style={{
@@ -12,180 +35,59 @@ const Orders = () => {
       }}
     >
       <div className="card-header">
-        <Typography
-          variant="h5"
-          style={{ fontFamily: "sans-serif", marginBottom: "1rem" }}
-        >
-          Dernières commandes
-        </Typography>
+        <Title>
+        Dernières commandes
+        </Title>
       </div>
-
-      <Link to="/orderDetails" style={{ textDecoration: "none" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            transition: "background-color 0.3s",
-            cursor: "pointer",
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = "#f0f0f0";
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = "initial";
-          }}
-        >
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              John Doe
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              john.doe@example.com
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              $100
-            </Typography>
-          </div>
-
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              10/03/2023 10:23 AM
-            </Typography>
-          </div>
-
+      
+      {orders.map(order => (
+        <Link to="/orderDetails" key={order._id} style={{ textDecoration: "none" }}>
           <div
             style={{
-              borderRadius: "8px",
-              padding: "6px",
-              backgroundColor: "#71f505",
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "2rem",
+              transition: "background-color 0.3s",
+              cursor: "pointer",
+              alignItems: "center", 
+            }}
+            onMouseOver={(e) => {
+              e.target.style.backgroundColor = "#f0f0f0";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.backgroundColor = "initial";
             }}
           >
-            <Typography
-              variant="body1"
-              style={{ fontFamily: "sans-serif", color: "#2d6103" }}
-            >
-              Payé
-            </Typography>
-          </div>
-        </div>
-      </Link>
+            <div>
+              <StyledText>
+                {order.userId.name}
+              </StyledText>
+            </div>
+            <div>
+              <StyledText>
+                {order.userId.email}
+              </StyledText>
+            </div>
+            
+            <div>
+              <StyledText>
+                {order.createdAt}
+              </StyledText>
+            </div>
+            <div>
+              <StyledText>
+                ${order.prixOfOllOderByUser || 0}
+              </StyledText>
+            </div>
+            <div>
+              <StyledText>
+                {order.isPaid ? "payé" : "non payé"}
+              </StyledText>
+            </div>
 
-      <hr style={{ width: "100%", borderTop: "1px solid #ddd" }} />
-
-      <Link to="/orderDetails" style={{ textDecoration: "none" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            transition: "background-color 0.3s",
-            cursor: "pointer",
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = "#f0f0f0";
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = "initial";
-          }}
-        >
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              John Doe
-            </Typography>
           </div>
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              john.doe@example.com
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              $100
-            </Typography>
-          </div>
-
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              10/03/2023 10:23 AM
-            </Typography>
-          </div>
-          <div
-            style={{
-              borderRadius: "8px",
-              padding: "6px",
-              backgroundColor: "#71f505",
-            }}
-          >
-            <Typography
-              variant="body1"
-              style={{ fontFamily: "sans-serif", color: "#2d6103" }}
-            >
-              Payé
-            </Typography>
-          </div>
-        </div>
-      </Link>
-
-      <hr style={{ width: "100%", borderTop: "1px solid #ddd" }} />
-
-      <Link to="/orderDetails" style={{ textDecoration: "none" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "1rem",
-            transition: "background-color 0.3s",
-            cursor: "pointer",
-          }}
-          onMouseOver={(e) => {
-            e.target.style.backgroundColor = "#f0f0f0";
-          }}
-          onMouseOut={(e) => {
-            e.target.style.backgroundColor = "initial";
-          }}
-        >
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              John Doe
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              john.doe@example.com
-            </Typography>
-          </div>
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              $100
-            </Typography>
-          </div>
-
-          <div>
-            <Typography variant="body1" style={{ fontFamily: "sans-serif" }}>
-              10/03/2023 10:23 AM
-            </Typography>
-          </div>
-          <div
-            style={{
-              borderRadius: "8px",
-              padding: "6px",
-              backgroundColor: "#71f505",
-            }}
-          >
-            <Typography
-              variant="body1"
-              style={{ fontFamily: "sans-serif", color: "#2d6103" }}
-            >
-              Payé
-            </Typography>
-          </div>
-        </div>
-      </Link>
+        </Link>
+      ))}
     </div>
   );
 };

@@ -141,6 +141,14 @@ export const Title = styled(Typography)`
   }
 `;
 
+export const StyledText = styled(Typography)`
+&& {
+  font-family: "DM sans";
+  font-size: 18px;
+  font-weight: 500;
+}
+`;
+
 export const OrderContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -212,7 +220,7 @@ export const StyledTableCell = styled(TableCell)`
 export const StyledElement = styled.div`
     display: flex;
     flex-direction: column ;
-    margin-left: 2rem ;
+    margin-left: 1rem ;
 `;
 
 export const OrderTable = styled.div`

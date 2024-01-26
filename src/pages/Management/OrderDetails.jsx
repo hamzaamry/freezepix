@@ -10,8 +10,9 @@ import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import  Black  from "../../Assets/logo/Black.png"
-import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost } from "../../shared/StyledComponents"
+import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost , StyledText } from "../../shared/StyledComponents"
 import jsPDF from 'jspdf';
+import axios from "axios";
 
   const handleOpenPDF = () => {
     const pdf = new jsPDF();
@@ -45,21 +46,54 @@ import jsPDF from 'jspdf';
 const OrderDetails = () => {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
+
+  const [CreationDate , setCreationDate ] = useState("")
+  const [userDetails , setUserDetails ] = useState([])
+  //const [formattedDate, setFormattedDate] = useState("")
+  const [PanierData , setPanierData ] = useState([])
+  const [orderData , setOrderData ] = useState([])
+
+  const [currency , setCurrency] = useState("")
+
+ 
   useEffect(() => {
-    if (!token) {
-      navigate('/Signin');
+    const fetchData = async () => {
+    try{
+      const response = await axios.get("http://localhost:5000/api/order/getPanierById/65ac0e270c0846c4df78cf93")
+
+      setPanierData(response.data.panier)
+      setUserDetails(response.data.panier.userId)
+      setCreationDate(response.data.panier.createdAt)
+      setOrderData(response.data.panier.Orders)
+      setCurrency(response.data.panier.Orders[0].currency)
+
+
+    } catch(error) {
+      console.error('Error fetching data:', error);
     }
-  }, [token, navigate]); 
+  }
+  if (!token) {
+    navigate('/Signin');
+  } else {
+    fetchData();
+  }
+}, [token, navigate]);
 
   const [status, setStatus] = useState("");
+
+
 
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
   };
+
     const [livreClicked, setLivreClicked] = useState(false);
     const handleLivreClick = () => {
       setLivreClicked(true);
     };
+
+
+
   return (
     <div>
       <Title>Order Details</Title>
@@ -74,13 +108,18 @@ const OrderDetails = () => {
       </div>
 
       <OrderContainer>
+
+
+        {/* ////// Date /////// */}
         <div style={{ display: 'flex' }} >
+          <StyledDate>
         <CalendarTodayIcon />
-        <StyledDate>
-            Dec 12 2021 
+        {CreationDate}
         </StyledDate>
         </div>
          
+
+
         <div>
           <StyledSelect
             id="status"
@@ -113,22 +152,31 @@ const OrderDetails = () => {
               <OrderTypography>
                 Client
               </OrderTypography>
-              <Typography>userName</Typography>
-              <Typography>user@example.com</Typography>
+              <StyledText>Nom: {userDetails.name}</StyledText>
+              <StyledText>Email: {userDetails.email}</StyledText>
             </StyledElement>
+
           </OrderElement>
           <OrderElement>
+
+
             <div>
               <IconButton style={{ backgroundColor: "#000" }} >
                 <LocalShippingIcon style={{ fontSize: "35px", color: "#fff" }} />
               </IconButton>
             </div>
 
+
+            {/* ////// Order Info ///// */}
+
             <StyledElement>
               <OrderTypography>
                 Order Info
               </OrderTypography>
-              <Typography>shipping : CountryName</Typography>
+              <StyledText>Methode de paiment: {PanierData.paymentMethod} </StyledText>
+              <StyledText>Total: {PanierData.prixOfOllOderByUser} {currency}</StyledText>
+              <StyledText> {PanierData.isPaid ? "payé" : "non payé"}  </StyledText>  
+
             </StyledElement>
           </OrderElement>
 
@@ -143,8 +191,10 @@ const OrderDetails = () => {
               <OrderTypography>
                 Deliver To
               </OrderTypography>
-              <Typography>Address: Arusha</Typography>
-              <Typography>P.O Box Arusha Tz 1234</Typography>
+              <StyledText>
+                Address:  {PanierData.shippingAddress && PanierData.shippingAddress.length > 0 ? PanierData.shippingAddress : "non spécifié"} 
+              </StyledText>
+              <StyledText> {PanierData.Encours ? "Livraison en cours" : ""}  </StyledText>  
             </StyledElement>
           </OrderElement>
         </OrderElements>
