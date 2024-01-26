@@ -14,6 +14,8 @@ import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTab
 import jsPDF from 'jspdf';
 import axios from "axios";
 import { useParams } from 'react-router-dom';
+import { format } from 'date-fns';
+
 
 const OrderDetails = () => {
   const token = useSelector((state) => state.auth.token);
@@ -33,10 +35,11 @@ const OrderDetails = () => {
       const response = await axios.get(`http://localhost:5000/api/order/getPanierById/${orderId}`)
       setPanierData(response.data.panier)
       setUserDetails(response.data.panier.userId)
-      setCreationDate(response.data.panier.createdAt)
       setOrderData(response.data.panier.Orders)
       setCurrency(response.data.panier.Orders[0].currency)
-
+      const rawDate = new Date(response.data.panier.createdAt);
+      const formattedDate = `${rawDate.getDate()}/${rawDate.getMonth() + 1}/${rawDate.getFullYear()} ${rawDate.getHours()}:${rawDate.getMinutes()}`;
+      setCreationDate(formattedDate);
     } catch(error) {
       console.error('Error fetching data:', error);
     }
@@ -46,7 +49,8 @@ const OrderDetails = () => {
   } else {
     fetchData();
   }
-}, [token, navigate]);
+}, [token, navigate, orderId]);
+
 
 const handleOpenPDF = () => {
   const pdf = new jsPDF();
@@ -89,7 +93,7 @@ const handleOpenPDF = () => {
     const handleLivreClick = () => {
       setLivreClicked(true);
     };
-
+    
   return (
     <div>
       <Title>Order Details</Title>

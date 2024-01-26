@@ -28,6 +28,10 @@ const Orders = () => {
   const handleOrderClick = (orderId) => {
     navigate(`/orderDetails/${orderId}`);
   };
+  const formatOrderDate = (rawDate) => {
+    const date = new Date(rawDate);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+  };
 
   return (
     <div
@@ -67,7 +71,7 @@ const Orders = () => {
             <StyledText>{order.userId.email}</StyledText>
           </div>
           <div>
-            <StyledText>{order.createdAt}</StyledText>
+          <StyledText>{formatOrderDate(order.createdAt)}</StyledText>
           </div>
           <div>
             <StyledText>${order.prixOfOllOderByUser || 0}</StyledText>
