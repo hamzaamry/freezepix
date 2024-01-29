@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <div>
-      <Box display="flex" flexWrap="wrap">
+      <Box display="flex" >
         <CustomCard
           title="BUDGET TOTAL "
           icon={<MonetizationOnIcon />}

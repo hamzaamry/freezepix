@@ -149,6 +149,20 @@ export const StyledText = styled(Typography)`
 }
 `;
 
+export const StyledCardText = styled(Typography)`
+&& {
+  font-family: "DM sans";
+  font-size: 20px;
+  font-weight: 700;
+}
+`;
+export const StyledCardValues = styled(Typography)`
+&& {
+  font-family: "DM sans";
+  font-size: 28px;
+  font-weight: 600;
+}
+`;
 export const OrderContainer = styled.div`
   display: flex;
   justify-content: space-between;

@@ -14,18 +14,23 @@ import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTab
 import jsPDF from 'jspdf';
 import axios from "axios";
 import { useParams } from 'react-router-dom';
-import { format } from 'date-fns';
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
 
 const OrderDetails = () => {
+
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
   const [CreationDate , setCreationDate ] = useState("")
-  const [userDetails , setUserDetails ] = useState([])
+  const [userDetails, setUserDetails] = useState({});
+
   const [PanierData , setPanierData ] = useState([])
   const [orderData , setOrderData ] = useState([])
   const [currency , setCurrency] = useState("")
+
+  const[imageProducts , setImageProducts] = useState()
+
 
   const { orderId } = useParams();
 
@@ -40,6 +45,8 @@ const OrderDetails = () => {
       const rawDate = new Date(response.data.panier.createdAt);
       const formattedDate = `${rawDate.getDate()}/${rawDate.getMonth() + 1}/${rawDate.getFullYear()} ${rawDate.getHours()}:${rawDate.getMinutes()}`;
       setCreationDate(formattedDate);
+      setImageProducts(response.data.imageProducts)
+      console.log(imageProducts)
     } catch(error) {
       console.error('Error fetching data:', error);
     }
@@ -68,11 +75,11 @@ const handleOpenPDF = () => {
   pdf.text(`Nom: ${userDetails.name}`, 10, 55);
   pdf.text(`Téléphone: ${userDetails.phone}`, 10, 70);
   pdf.text(`Email: ${userDetails.email}`, 10, 85);
-  pdf.text(`Adresse: ${userDetails.adresse}`, 10, 100);
-  pdf.text("Produits Achetés:", 10, 120);
+  pdf.text(`Adresse: ${userDetails.shippingAddress[0].address1}`, 10, 100);
+  pdf.text("Produit Acheté:", 10, 120);
 
   PanierData.Orders && PanierData.Orders.forEach((order, index) => {
-    const yPosition = 140 + index * 60; 
+    const yPosition = 200 + index * 60; 
     pdf.text(`Produit ${index + 1}:`, 10, yPosition);
     pdf.text(`   N° Commande: ${order.NumCommande}`, 20, yPosition + 10);
     pdf.text(`   Taille: ${order.taille} ${order.currency}`, 20, yPosition + 20);
@@ -106,9 +113,7 @@ const handleOpenPDF = () => {
           Retour
         </StyledButton>
       </div>
-
       <OrderContainer>
-
 
         {/* ////// Date /////// */}
         <div style={{ display: 'flex' }} >
@@ -167,10 +172,7 @@ const handleOpenPDF = () => {
                 <LocalShippingIcon style={{ fontSize: "35px", color: "#fff" }} />
               </IconButton>
             </div>
-
-
             {/* ////// Order Info ///// */}
-
             <StyledElement>
               <OrderTypography>
                 Order Info
@@ -194,8 +196,9 @@ const handleOpenPDF = () => {
                 Deliver To
               </OrderTypography>
               <StyledText>
-                Address:  {PanierData.shippingAddress && PanierData.shippingAddress.length > 0 ? PanierData.shippingAddress : "non spécifié"} 
+                Address: {PanierData.shippingAddress && PanierData.shippingAddress.length > 0 ? PanierData.shippingAddress[0].address1 : "non spécifié"}
               </StyledText>
+
               <StyledText> {PanierData.Encours ? "Livraison en cours" : ""}  </StyledText>  
             </StyledElement>
           </OrderElement>
@@ -247,6 +250,30 @@ const handleOpenPDF = () => {
           </Button>
         </div>
       </OrderTable>
+
+      <div>
+      <StyledText>Produits Achetés:</StyledText>
+      <div>
+       
+            {imageProducts &&
+              imageProducts[0].map((imageUrl, index) => (
+                <img
+                  key={index}
+                  src={imageUrl}
+                  alt={`Product ${index + 1}`}
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    marginBottom: "10px",
+                    borderRadius: "20px",
+                    cursor: "pointer",
+                    padding: "10px",
+                  }}
+                  //onClick={} 
+                />
+              ))}
+          </div>
+      </div>
     </OrderTableContainer>
       </div>
   );
