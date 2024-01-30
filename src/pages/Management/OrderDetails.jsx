@@ -138,17 +138,20 @@ const handleOpenPDF = () => {
   // Produits achetés
   pdf.text("Produits Achetés:", 10, 160);
   PanierData.Orders && PanierData.Orders.forEach((order, index) => {
-    const yPosition = 180 + index * 40;
-    pdf.text(`Produit ${index + 1}:`, 10, yPosition);
-    pdf.text(`   N° Commande: ${order.NumCommande}`, 20, yPosition + 10);
-    pdf.text(`   Taille: ${order.taille} ${order.currency}`, 20, yPosition + 20);
-    pdf.text(`   Prix: ${order.prixFinalSansTax} ${order.currency}`, 20, yPosition + 30);
+    const yPosition = 180 + index * 50;
+    pdf.text(`   Produit ${index + 1}:`, 10, yPosition);
+    pdf.text(`      N° Commande: ${order.NumCommande}`, 20, yPosition + 10);
+    pdf.text(`      Quantité: ${order.qunaitity}`, 20, yPosition + 20);
+    pdf.text(`      Taille: ${order.taille} ${order.currency}`, 20, yPosition + 30);
+    pdf.text(`      Prix: ${order.prixFinalSansTax} ${order.currency}`, 20, yPosition + 40);
+    
   });
 
   const blob = pdf.output('blob');
   const url = URL.createObjectURL(blob);
   window.open(url);
 };
+
 
 
     const [livreClicked, setLivreClicked] = useState(false);
@@ -307,28 +310,31 @@ const handleOpenPDF = () => {
       </OrderTable>
 
       <div>
-      <StyledText>Produits Achetés:</StyledText>
-      <div>
-       
-            {imageProducts &&
-              imageProducts[0].map((imageUrl, index) => (
-                <img
-                  key={index}
-                  src={imageUrl}
-                  alt={`Product ${index + 1}`}
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "200px",
-                    marginBottom: "10px",
-                    borderRadius: "20px",
-                    cursor: "pointer",
-                    padding: "10px",
-                  }}
-                  //onClick={} 
-                />
-              ))}
-          </div>
-      </div>
+    <StyledText>Produits Achetés:</StyledText>
+    <div>
+        {imageProducts &&
+            imageProducts.map((imageArray, arrayIndex) => (
+                <div key={arrayIndex}>
+                    {imageArray.map((imageUrl, index) => (
+                        <img
+                            key={index}
+                            src={imageUrl}
+                            alt={`Product ${arrayIndex + 1}-${index + 1}`}
+                            style={{
+                                maxWidth: "100%",
+                                maxHeight: "200px",
+                                marginBottom: "10px",
+                                borderRadius: "20px",
+                                cursor: "pointer",
+                                padding: "10px",
+                            }}
+                        />
+                    ))}
+                </div>
+            ))}
+    </div>
+</div>
+
     </OrderTableContainer>
       </div>
   );
