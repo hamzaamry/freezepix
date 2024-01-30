@@ -15,24 +15,79 @@ import jsPDF from 'jspdf';
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const OrderDetails = () => {
 
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
-
   const [CreationDate , setCreationDate ] = useState("")
   const [userDetails, setUserDetails] = useState({});
-
   const [PanierData , setPanierData ] = useState([])
   const [orderData , setOrderData ] = useState([])
   const [currency , setCurrency] = useState("")
-
   const[imageProducts , setImageProducts] = useState()
 
-
   const { orderId } = useParams();
+
+  
+  const [status, setStatus] = useState("");
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+  };
+
+  useEffect(() => {
+    const updateStatus = async () => {
+      try {
+        let apiUrl = "";
+
+        switch (status) {
+          case "Awaiting Confirmation":
+            apiUrl = `http://localhost:5000/api/order/updateIsenAttendComfirmation/${orderId}`;
+            break;
+          case "Available for Printing":
+            apiUrl = `http://localhost:5000/api/order/DisponibleInpression/${orderId}`;
+            break;
+          case "Available for Shipping":
+            apiUrl = `http://localhost:5000/api/order/DispoExpedition/${orderId}`;
+            break;
+          case "In Delivery":
+            apiUrl = `http://localhost:5000/api/order/UpdateEncours/${orderId}`;
+            break;
+          case "Delivered":
+            apiUrl = `http://localhost:5000/api/order/updateIsDelivred/${orderId}`;
+            break;
+          case "Order Refused":
+            apiUrl = `http://localhost:5000/api/order/updateIsCanceled/${orderId}`;
+            break;
+          case "Order Paid":
+            apiUrl = `http://localhost:5000/api/order/updateIsPaid/${orderId}`;
+            break;
+          default:
+            break;
+        }
+
+        // Si une URL est définie, effectuez la requête PUT
+        if (apiUrl) {
+          const response = await axios.put(apiUrl);
+          // Gérez la réponse si nécessaire
+          console.log(response.data);
+          toast.success('Statut mis à jour avec succès !', { position: toast.POSITION.TOP_RIGHT });
+
+        }
+      } catch (error) {
+        console.error('Error updating status:', error);
+        toast.error('Erreur lors de la mise à jour du statut.', { position: toast.POSITION.TOP_RIGHT });
+
+      }
+    };
+
+    if (status !== "choose Status") {
+      updateStatus();
+    }
+  }, [status, orderId]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,11 +145,6 @@ const handleOpenPDF = () => {
   const url = URL.createObjectURL(blob);
   window.open(url);
 };
-
-  const [status, setStatus] = useState("");
-  const handleStatusChange = (event) => {
-    setStatus(event.target.value);
-  };
 
     const [livreClicked, setLivreClicked] = useState(false);
     const handleLivreClick = () => {
