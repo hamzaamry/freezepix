@@ -71,7 +71,6 @@ const OrderDetails = () => {
         // Si une URL est définie, effectuez la requête PUT
         if (apiUrl) {
           const response = await axios.put(apiUrl);
-          // Gérez la réponse si nécessaire
           console.log(response.data);
           toast.success('Statut mis à jour avec succès !', { position: toast.POSITION.TOP_RIGHT });
 
@@ -113,7 +112,6 @@ const OrderDetails = () => {
   }
 }, [token, navigate, orderId]);
 
-
 const handleOpenPDF = () => {
   const pdf = new jsPDF();
   pdf.addImage(Black, 'PNG', pdf.internal.pageSize.width - 50, 10, 20, 20);
@@ -127,14 +125,20 @@ const handleOpenPDF = () => {
   pdf.setFontSize(12);
 
   pdf.text(`Date: ${CreationDate}`, 10, 40);
-  pdf.text(`Nom: ${userDetails.name}`, 10, 55);
-  pdf.text(`Téléphone: ${userDetails.phone}`, 10, 70);
-  pdf.text(`Email: ${userDetails.email}`, 10, 85);
-  pdf.text(`Adresse: ${userDetails.shippingAddress[0].address1}`, 10, 100);
-  pdf.text("Produit Acheté:", 10, 120);
 
+  // Informations sur le client
+  pdf.text(`Nom: ${PanierData.shippingAddress[0].name}`, 10, 55);
+  pdf.text(`Téléphone: ${PanierData.shippingAddress[0].phone}`, 10, 70);
+  pdf.text(`Email: ${userDetails.email}`, 10, 85);
+  pdf.text(`Adresse:`, 10, 100);
+  pdf.text(`   ${PanierData.shippingAddress[0].address1}`, 20, 110);
+  pdf.text(`   ${PanierData.shippingAddress[0].address2}`, 20, 120);
+  pdf.text(`   Code Postal: ${PanierData.shippingAddress[0].postalCode}`, 20, 130);
+
+  // Produits achetés
+  pdf.text("Produits Achetés:", 10, 160);
   PanierData.Orders && PanierData.Orders.forEach((order, index) => {
-    const yPosition = 200 + index * 60; 
+    const yPosition = 180 + index * 40;
     pdf.text(`Produit ${index + 1}:`, 10, yPosition);
     pdf.text(`   N° Commande: ${order.NumCommande}`, 20, yPosition + 10);
     pdf.text(`   Taille: ${order.taille} ${order.currency}`, 20, yPosition + 20);
@@ -145,6 +149,7 @@ const handleOpenPDF = () => {
   const url = URL.createObjectURL(blob);
   window.open(url);
 };
+
 
     const [livreClicked, setLivreClicked] = useState(false);
     const handleLivreClick = () => {
