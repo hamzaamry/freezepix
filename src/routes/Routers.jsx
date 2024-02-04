@@ -13,6 +13,7 @@ import TailleImage from '../pages/Management/TailleImage';
 import Tax from '../pages/Management/Tax';
 import OrderDetails from '../pages/Management/OrderDetails';
 import Countries from '../pages/Management/Countries';
+import Invoice from '../components/PDF/Invoice';
 
 const Routers = () => {
   return (
@@ -30,10 +31,10 @@ const Routers = () => {
         <Route path="/MarketingUser" element={<MarketingUser />} />
         <Route path="/Tax" element={<Tax />} />
         <Route path="/Coupon" element={<Coupon />} />
-
+        <Route path="/Countries" element={<Countries />} />
         <Route path="/TailleImage" element={<TailleImage />} />
         <Route path="/orderDetails/:orderId" element={<OrderDetails />} />
-        <Route path="/Countries" element={<Countries />} />
+        <Route path="/Invoice" element={<Invoice />} />
         
     </Routes>
   )

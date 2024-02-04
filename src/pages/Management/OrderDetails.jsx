@@ -8,15 +8,13 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import  Black  from "../../Assets/logo/Black.png"
 import { StyledButton, Title, OrderContainer, StyledDate, StyledSelect, OrderTableContainer, OrderElements, OrderElement, OrderTypography, StyledTableRow, StyledTableCell , StyledElement, OrderTable, TotalCost , StyledText } from "../../shared/StyledComponents"
-import jsPDF from 'jspdf';
 import axios from "axios";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactToPrint from 'react-to-print';
 
 const OrderDetails = () => {
 
@@ -31,7 +29,6 @@ const OrderDetails = () => {
 
   const { orderId } = useParams();
 
-  
   const [status, setStatus] = useState("");
   const handleStatusChange = (event) => {
     setStatus(event.target.value);
@@ -68,7 +65,6 @@ const OrderDetails = () => {
             break;
         }
 
-        // Si une URL est définie, effectuez la requête PUT
         if (apiUrl) {
           const response = await axios.put(apiUrl);
           console.log(response.data);
@@ -101,6 +97,7 @@ const OrderDetails = () => {
       setCreationDate(formattedDate);
       setImageProducts(response.data.imageProducts)
       console.log(imageProducts)
+
     } catch(error) {
       console.error('Error fetching data:', error);
     }
@@ -112,47 +109,18 @@ const OrderDetails = () => {
   }
 }, [token, navigate, orderId]);
 
-const handleOpenPDF = () => {
-  const pdf = new jsPDF();
-  pdf.addImage(Black, 'PNG', pdf.internal.pageSize.width - 50, 10, 20, 20);
 
-  pdf.setFontSize(16);
-  const factureText = "Facture";
-  const factureTextWidth = pdf.getStringUnitWidth(factureText) * pdf.internal.getFontSize() / pdf.internal.scaleFactor;
-  const centerX = (pdf.internal.pageSize.width - factureTextWidth) / 2;
-  pdf.text(factureText, centerX, 30);
+const handleGoToInvoice = () => {
+  const invoiceData = {
+    CreationDate,
+    userDetails,
+    PanierData,
+    orderData,
+    imageProducts,
+  };
 
-  pdf.setFontSize(12);
-
-  pdf.text(`Date: ${CreationDate}`, 10, 40);
-
-  // Informations sur le client
-  pdf.text(`Nom: ${PanierData.shippingAddress[0].name}`, 10, 55);
-  pdf.text(`Téléphone: ${PanierData.shippingAddress[0].phone}`, 10, 70);
-  pdf.text(`Email: ${userDetails.email}`, 10, 85);
-  pdf.text(`Adresse:`, 10, 100);
-  pdf.text(`   ${PanierData.shippingAddress[0].address1}`, 20, 110);
-  pdf.text(`   ${PanierData.shippingAddress[0].address2}`, 20, 120);
-  pdf.text(`   Code Postal: ${PanierData.shippingAddress[0].postalCode}`, 20, 130);
-
-  // Produits achetés
-  pdf.text("Produits Achetés:", 10, 160);
-  PanierData.Orders && PanierData.Orders.forEach((order, index) => {
-    const yPosition = 180 + index * 50;
-    pdf.text(`   Produit ${index + 1}:`, 10, yPosition);
-    pdf.text(`      N° Commande: ${order.NumCommande}`, 20, yPosition + 10);
-    pdf.text(`      Quantité: ${order.qunaitity}`, 20, yPosition + 20);
-    pdf.text(`      Taille: ${order.taille} ${order.currency}`, 20, yPosition + 30);
-    pdf.text(`      Prix: ${order.prixFinalSansTax} ${order.currency}`, 20, yPosition + 40);
-    
-  });
-
-  const blob = pdf.output('blob');
-  const url = URL.createObjectURL(blob);
-  window.open(url);
+  navigate('/Invoice', { state: { invoiceData } });
 };
-
-
 
     const [livreClicked, setLivreClicked] = useState(false);
     const handleLivreClick = () => {
@@ -162,7 +130,8 @@ const handleOpenPDF = () => {
   return (
     <div>
       <Title>Order Details</Title>
-      <div style={{ marginBottom: '2rem' }}>
+
+      <div style={{ marginBottom: '2rem' , display: 'flex' , justifyContent: 'space-between' }}>
         <StyledButton
           variant="contained"
           component={Link} 
@@ -170,6 +139,11 @@ const handleOpenPDF = () => {
         >
           Retour
         </StyledButton>
+        <div>
+  
+        <StyledButton  variant="contained" onClick={handleGoToInvoice}>Go to Invoice</StyledButton>
+    </div>
+
       </div>
       <OrderContainer>
 
@@ -197,10 +171,6 @@ const handleOpenPDF = () => {
           <option value="Order Refused">Commande refusée</option>
           <option value="Order Paid">Commande payée</option>
         </StyledSelect>
-
-          <IconButton style={{ color: "white" }} onClick={handleOpenPDF} >
-            <PrintIcon />
-          </IconButton>
         </div>
       </OrderContainer>
 
