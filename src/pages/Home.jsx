@@ -41,8 +41,8 @@ const Home = () => {
       setNotDeliveredOrders(notDeliveredOrdersData.count.toString());
   
       const totalBudgetData = await TotalBudget();
-      console.log( "totalBudgetData", totalBudgetData)
-      //setTotalBudget(totalBudgetData.message);
+      setTotalBudget(totalBudgetData.totalPrice.toString() );
+      
     } catch (error) {
       console.error('Error fetching data:', error);
     }
