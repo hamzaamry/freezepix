@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import CustomCard from '../components/Statistics/CustomCard'
+import CustomCard from '../components/Statistics/CustomCard';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'; 
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import GroupIcon from '@mui/icons-material/Group';
@@ -10,53 +10,44 @@ import { Box } from '@mui/material';
 import Orders from '../components/Statistics/Orders';
 import { VenteParJour, TotalUsers, NotDeliveredOrders, TotalBudget } from '../components/Statistics/Api.js';
 
-
 const Home = () => {
   const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
-  //vente par jour
-  const [DailySales, setDailySales]=useState(null)
-  const [totalUsers, setTotalUsers]=useState()
-  const [notDeliveredOrders, setNotDeliveredOrders]=useState()
-  const [totalBudget, setTotalBudget]=useState()
+  // State variables
+  const [DailySales, setDailySales] = useState([]);
+  const [totalUsers, setTotalUsers] = useState([]);
+  const [notDeliveredOrders, setNotDeliveredOrders] = useState([]);
+  const [totalBudget, setTotalBudget] = useState([]);
 
+  // Fetch data when token changes
   useEffect(() => {
-    if (!token) {
+    if (!token) 
       navigate('/Signin');
-    } else {
-      const fetchData = async () => {
-        try {
-          const dailySalesResponse = await VenteParJour();
-          console.log(dailySalesResponse.data.count)
-          setDailySales(dailySalesResponse.data.count);
-          console.log("daily sales : " , DailySales)
-
-
-
-          const notDeliveredOrdersResponse = await NotDeliveredOrders();
-          console.log(notDeliveredOrdersResponse.data.count)
-          setNotDeliveredOrders(notDeliveredOrdersResponse.data.count);
-          console.log( "notDeliveredOrders" , notDeliveredOrders)
-         
-
-  
-
-          const totalBudgetResponse = await TotalBudget();
-          const totalUsersResponse = await TotalUsers();
-        
-          //setTotalUsers(totalUsersResponse.data);
-          
-          //setTotalBudget(totalBudgetResponse.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-
+    else {
       fetchData();
     }
-  }, [token, navigate]); 
+  }, [token, navigate]);
 
+  const fetchData = async () => {
+    try {
+      const dailySalesData = await VenteParJour();
+      setDailySales(dailySalesData.count.toString());
+  
+      const totalUsersData = await TotalUsers();
+      setTotalUsers(totalUsersData.count.toString());
+  
+      const notDeliveredOrdersData = await NotDeliveredOrders();
+      setNotDeliveredOrders(notDeliveredOrdersData.count.toString());
+  
+      const totalBudgetData = await TotalBudget();
+      console.log( "totalBudgetData", totalBudgetData)
+      //setTotalBudget(totalBudgetData.message);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
 
   return (
     <div>
@@ -65,14 +56,14 @@ const Home = () => {
           title="BUDGET TOTAL "
           icon={<MonetizationOnIcon />}
           color="#2196F3"
-          value="$24k"
+          value={totalBudget}
           style={{ flex: 1, minWidth: 100, maxWidth: 300, margin: '0 10px 20px' }}
         />
         <CustomCard
           title="TOTAL DES UTILISATEURS"
           icon={<GroupIcon />}
           color="#2196F3"
-          value="1.6k"
+          value={totalUsers}
           style={{ flex: 1, minWidth: 100, maxWidth: 300, margin: '0 10px 20px' }}
         />
         <CustomCard
