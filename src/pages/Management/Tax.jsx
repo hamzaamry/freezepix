@@ -37,7 +37,8 @@ const Tax = () => {
       const response = await axios.get('http://localhost:5000/api/tax/getAllTax');
 
       if (response.data.success) {
-        setTaxData(response.data.tax[0].Country);
+        const countries = response.data.tax.flatMap(taxItem => taxItem.Country);
+        setTaxData(countries);
       } else {
         console.error('Erreur lors de la récupération des données :', response.data.message);
       }
@@ -110,8 +111,6 @@ const Tax = () => {
       });
     }
   };
-
-
 
   return (
     <div>

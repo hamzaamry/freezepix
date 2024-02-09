@@ -56,7 +56,7 @@ const Home = () => {
           title="BUDGET TOTAL "
           icon={<MonetizationOnIcon />}
           color="#2196F3"
-          value={totalBudget}
+          value={"$" + totalBudget}
           style={{ flex: 1, minWidth: 100, maxWidth: 300, margin: '0 10px 20px' }}
         />
         <CustomCard
