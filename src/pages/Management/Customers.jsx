@@ -54,6 +54,8 @@ const Customers = () => {
         {
           name: selectedCustomer.name,
           email: selectedCustomer.email,
+          adresse: selectedCustomer.adresse,
+          phone: selectedCustomer.phone,
         }
       );
 
@@ -87,23 +89,22 @@ const Customers = () => {
     {
       field: "photo",
       headerName: "Photo",
-      width: 80,
+      width: 100,
       editable: false,
       renderCell: (params) => (
         <img
           src={params.value}
           alt="profil"
-          style={{ width: "45px", height: "45px", borderRadius: "50%" }}
+          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         />
       ),
     },
-    { field: "name", headerName: "Nom", width: 80, editable: false },
-    { field: "lastName", headerName: "Prénom", width: 80, editable: false },
-    { field: "email", headerName: "Email", width: 190, editable: false },
-    { field: "phone", headerName: "Numéro tel", width: 100, editable: false },
-    { field: "role", headerName: "Rôle", width: 150, editable: false },
+    { field: "name", headerName: "Nom", width: 100, editable: false },
+    { field: "email", headerName: "Email", width: 200, editable: false },
+    { field: "phone", headerName: "Numéro tel", width: 120, editable: false },
+    { field: "role", headerName: "Rôle", width: 180, editable: false },
     { field: "adresse", headerName: "Adresse", width: 180, editable: false },
-    { field: "age", headerName: "Age", width: 50, editable: false },
+
     {
       field: "action",
       headerName: "Action",
