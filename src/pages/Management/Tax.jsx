@@ -148,9 +148,9 @@ const Tax = () => {
                  <IconButton> 
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteClick(country._id)} >
+                  {/* <IconButton onClick={() => handleDeleteClick(country._id)} >
                     <DeleteIcon />
-                  </IconButton>
+                  </IconButton> */}
                 </TableCell>
               </TableRow>
             ))}

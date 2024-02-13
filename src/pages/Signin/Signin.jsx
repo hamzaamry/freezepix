@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setToken , setUser } from "../../Store/AuthSlice";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   palette: {
@@ -18,12 +20,11 @@ const theme = createTheme({
 });
 
 const Signin = () => {
-
   const dispatch = useDispatch(); 
-  
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -33,16 +34,29 @@ const Signin = () => {
         email,
         password,
       });
-      console.log("Login successful:", response.data);
-      console.log("//////////  token from signin page : ", response.data.token )
 
       dispatch(setToken(response.data.token));
       dispatch(setUser(response.data)); 
       navigate("/home");
-
-
     } catch (error) {
-      console.error("Error signing in:", error.message);
+      if (error.response) {
+        // Server responded with an error status code
+        if (error.response.status === 401) {
+          toast.error("Invalid email or password.", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
+      } else if (error.request) {
+        // The request was made but no response was received
+        toast.error("Network error. Please try again later.", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        // Something happened in setting up the request that triggered an error
+        toast.error("An unexpected error occurred.", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      }
     }
   };
 

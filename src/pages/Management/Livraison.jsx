@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import tn from "../../Assets/tn.png";
-import { Typography, CardContent, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Grid } from "@mui/material";
+import { Typography, CardContent, Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from "@mui/material";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -168,7 +168,7 @@ const Livraison = () => {
       </div>
 
 
-      <Grid container spacing={0}>
+      <div>
         <StyledCardContainer>
           {livraisons.map((livraison) => (
             <StyledCard key={livraison._id}>
@@ -213,7 +213,7 @@ const Livraison = () => {
             </StyledCard>
           ))}
         </StyledCardContainer>
-      </Grid>
+      </div>
       <Box></Box>
 
       {/* Edit Dialog */}

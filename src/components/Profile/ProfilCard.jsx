@@ -6,15 +6,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 const ProfilCard = () => {
   const isAuthenticated = useSelector((state) => !!state.auth.token);
   const navigate = useNavigate();
   const userId = useSelector((state) => state.auth.userId);
 
+
   const [userData, setUserData] = useState(() => {
-    try {
+    try { 
       const storedUserData = localStorage.getItem('userData');
       return storedUserData ? JSON.parse(storedUserData) : null;
     } catch (error) {
@@ -27,7 +26,6 @@ const ProfilCard = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/admin/getOne/${userId}`);
-        console.log("Réponse de l'API pour obtenir les données :", response)
         setUserData(response.data);
         localStorage.setItem('userData', JSON.stringify(response.data));
       } catch (error) {
@@ -50,8 +48,8 @@ const ProfilCard = () => {
   };
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [password, setpassword] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -63,15 +61,10 @@ const ProfilCard = () => {
 
   const handlePasswordChange = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/users/updatepassword/${userId}`, {
-        currentPassword,
-        newPassword,
+      await axios.post(`http://localhost:5000/api/admin/updatePassword/${userId}`, {
+        password,
+        confirmPassword,
       });
-
-      console.log("data sent to backend :" , {
-        currentPassword,
-        newPassword,
-      })
 
       toast.success('Mot de passe a été changé avec succès!', {
         position: toast.POSITION.TOP_CENTER,
@@ -135,22 +128,22 @@ const ProfilCard = () => {
         <DialogTitle>Modifier le mot de passe</DialogTitle>
         <DialogContent>
           <TextField
-            label="Mot de passe actuel"
-            type="password"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-          <TextField
             label="Nouveau mot de passe"
             type="password"
             fullWidth
             margin="normal"
             variant="outlined"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            value={password}
+            onChange={(e) => setpassword(e.target.value)}
+          />
+          <TextField
+            label="Confirmer mot de passe"
+            type="password"
+            fullWidth
+            margin="normal"
+            variant="outlined"
+            value={confirmPassword}
+            onChange={(e) => setconfirmPassword(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
